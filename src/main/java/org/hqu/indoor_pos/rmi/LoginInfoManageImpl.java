@@ -2,21 +2,23 @@ package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hqu.indoor_pos.bean.LoginUser;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
 
 public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInfoManage{
 
 	private static final long serialVersionUID = 1L;
 
-	private Connection conn = DBUtil.getConnection();
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	
 	public LoginInfoManageImpl() throws RemoteException {
 		super();
@@ -28,20 +30,15 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	@Override
 	public List<LoginUser> findAllLoginUser() throws RemoteException {
 
-		List<LoginUser> loginUsers = new ArrayList<LoginUser>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from login");
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				LoginUser loginUser = new LoginUser(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
-				loginUsers.add(loginUser);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return loginUsers;
+		return this.jdbcTemplate.query("select * from login",   
+                new RowMapper<LoginUser>(){  
+              
+                    @Override  
+                    public LoginUser mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	LoginUser loginUser = new LoginUser(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+                        return loginUser;  
+                    }  
+        });  
 	}
 
 	/**
@@ -52,14 +49,9 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	public boolean saveLoginUser(LoginUser loginUser) throws RemoteException {
 		
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("insert into login values (?, ?, ?, ?)");
-			stat.setString(1, loginUser.getUserId());
-			stat.setString(2, loginUser.getUsername());
-			stat.setString(3, loginUser.getPassword());
-			stat.setString(4, loginUser.getRole());
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update("insert into login values (?, ?, ?, ?)",   
+	                new Object[]{loginUser.getUserId(), loginUser.getUsername(), loginUser.getPassword(), loginUser.getRole()}); 
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -71,17 +63,22 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	 * @param loginUser
 	 */
 	@Override
-	public boolean updateLoginUser(LoginUser loginUser) throws RemoteException {
+	public boolean updateLoginUser(final LoginUser loginUser) throws RemoteException {
 		
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("update login set username = ?, password = ?, role = ? where user_id = ?");
-			stat.setString(1, loginUser.getUsername());
-			stat.setString(2, loginUser.getPassword());
-			stat.setString(3, loginUser.getRole());
-			stat.setString(4, loginUser.getUserId());
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update(  
+					"update login set username = ?, password = ?, role = ? where user_id = ?",   
+	                new PreparedStatementSetter(){  
+	                    @Override  
+	                    public void setValues(PreparedStatement ps) throws SQLException {  
+	                        ps.setString(1, loginUser.getUsername());
+	                        ps.setString(2, loginUser.getPassword());
+	                        ps.setString(3, loginUser.getRole());
+	                        ps.setString(4, loginUser.getUserId());
+	                    }  
+	                }  
+	        );  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -93,14 +90,19 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	 * @param userId
 	 */
 	@Override
-	public boolean deleteLoginUser(String userId) throws RemoteException {
+	public boolean deleteLoginUser(final String userId) throws RemoteException {
 		
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("delete from login  where user_id = ?");
-			stat.setString(1,userId);
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update(  
+					"delete from login  where user_id = ?",   
+	                new PreparedStatementSetter(){  
+	                    @Override  
+	                    public void setValues(PreparedStatement ps) throws SQLException {  
+	                        ps.setString(1,userId);
+	                    }  
+	                }  
+	        );  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -112,21 +114,19 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	 * @param userId
 	 */
 	@Override
-	public LoginUser getLoginUserById(String userId) throws RemoteException {
+	public LoginUser getLoginUserById(final String userId) throws RemoteException {
 		
-		LoginUser loginUser = null;
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from login where user_id = ?");
-			stat.setString(1, userId);
-			ResultSet rs = stat.executeQuery();
-			rs.next();
-			loginUser = new LoginUser(userId, rs.getString(2), rs.getString(3), rs.getString(4));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return loginUser;
+		return (LoginUser) this.jdbcTemplate.queryForObject(  
+                "select * from login where user_id = ?",   
+                new Object[]{userId},  
+                new RowMapper<LoginUser>(){  
+  
+                    @Override  
+                    public LoginUser mapRow(ResultSet rs,int rowNum)throws SQLException {  
+                    	LoginUser loginUser = new LoginUser(userId, rs.getString(2), rs.getString(3), rs.getString(4));  
+                        return loginUser;  
+                    }  
+        }); 
 	}
 
 }
