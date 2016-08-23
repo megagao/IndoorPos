@@ -2,22 +2,24 @@ package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hqu.indoor_pos.bean.BaseStation;
 import org.hqu.indoor_pos.server.Server;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
 
 public class BaseStationManageImpl extends UnicastRemoteObject implements BaseStationManage{
 
 	private static final long serialVersionUID = 1L;
 
-	private Connection conn = DBUtil.getConnection();
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	
 	public BaseStationManageImpl() throws RemoteException {
 		super();
@@ -29,20 +31,16 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	@Override
 	public List<BaseStation> findAllBaseStation() throws RemoteException {
 
-		List<BaseStation> bases = new ArrayList<BaseStation>();
+		return this.jdbcTemplate.query("select * from base_station",   
+                new RowMapper<BaseStation>(){  
+              
+                    @Override  
+                    public BaseStation mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	BaseStation base = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));
+                        return base;  
+                    }  
+        });  
 		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from base_station");
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				BaseStation base = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));
-				bases.add(base);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return bases;
 	}
 	
 	/**
@@ -52,21 +50,18 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	@Override
 	public List<BaseStation> findBaseStationByRoomId(Integer roomId) throws RemoteException {
 		
-		List<BaseStation> bases = new ArrayList<BaseStation>();
+		return this.jdbcTemplate.query("select * from base_station where room_id = ?",
+				new Object[]{roomId},   
+                new int[]{java.sql.Types.INTEGER},
+                new RowMapper<BaseStation>(){  
+              
+                    @Override  
+                    public BaseStation mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	BaseStation base = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));
+                        return base;  
+                    }  
+        });  
 		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from base_station where room_id = ?");
-			stat.setInt(1, roomId);
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				BaseStation base = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));
-				bases.add(base);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return bases;
 	}
 
 	/**
@@ -75,16 +70,11 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	 */
 	@Override
 	public boolean saveBaseStation(BaseStation baseStation) throws RemoteException {
-		
+        
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("insert into base_station values (?, ?, ?, ?)");
-			stat.setString(1, baseStation.getBaseId());
-			stat.setInt(2, baseStation.getRoomId());
-			stat.setDouble(3, baseStation.getxAxis());
-			stat.setDouble(4, baseStation.getyAxis());
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update("insert into base_station values (?, ?, ?, ?)",   
+	                new Object[]{baseStation.getBaseId(), baseStation.getRoomId(), baseStation.getxAxis(), baseStation.getyAxis()});  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -98,18 +88,23 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	 * @param baseStation
 	 */
 	@Override
-	public boolean updateBaseStation(BaseStation baseStation)
+	public boolean updateBaseStation(final BaseStation baseStation)
 			throws RemoteException {
 		
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("update base_station set room_id = ?, x_axis = ?, y_axis = ? where base_id = ?");
-			stat.setInt(1, baseStation.getRoomId());
-			stat.setDouble(2, baseStation.getxAxis());
-			stat.setDouble(3, baseStation.getyAxis());
-			stat.setString(4, baseStation.getBaseId());
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update(  
+					"update base_station set room_id = ?, x_axis = ?, y_axis = ? where base_id = ?",   
+	                new PreparedStatementSetter(){  
+	                    @Override  
+	                    public void setValues(PreparedStatement ps) throws SQLException {  
+	                        ps.setInt(1, baseStation.getRoomId());  
+	                        ps.setDouble(2, baseStation.getxAxis());
+	                        ps.setDouble(3, baseStation.getyAxis());
+	                        ps.setString(4, baseStation.getBaseId());
+	                    }  
+	                }  
+	        );  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -123,14 +118,19 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	 * @param baseId
 	 */
 	@Override
-	public boolean deleteBaseStation(String baseId) throws RemoteException {
+	public boolean deleteBaseStation(final String baseId) throws RemoteException {
 		
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("delete from base_station  where room_id = ?");
-			stat.setString(1, baseId);
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update(  
+					"delete from base_station  where room_id = ?",   
+	                new PreparedStatementSetter(){  
+	                    @Override  
+	                    public void setValues(PreparedStatement ps) throws SQLException {  
+	                        ps.setString(1, baseId);  
+	                    }  
+	                }  
+	        );  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -146,19 +146,7 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	@Override
 	public BaseStation getBaseStationById(String baseId) throws RemoteException {
 		
-		BaseStation base = null;
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from base_station where base_id = ?");
-			stat.setString(1, baseId);
-			ResultSet rs = stat.executeQuery();
-			rs.next();
-			base = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return base;
+		return this.jdbcTemplate.queryForObject("select * from base_station where base_id = "+baseId, BaseStation.class);
 	}
 
 }
