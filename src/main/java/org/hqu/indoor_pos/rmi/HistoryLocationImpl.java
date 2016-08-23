@@ -2,21 +2,21 @@ package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hqu.indoor_pos.bean.Location;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryLocation{
 
 	private static final long serialVersionUID = 1L;
 
-	private Connection conn = DBUtil.getConnection();
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	
 	public HistoryLocationImpl() throws RemoteException {
 		super();
@@ -28,21 +28,16 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	@Override
 	public List<Location> findAllHistoryLocation() throws RemoteException {
 		
-		List<Location> locations = new ArrayList<Location>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from location");
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
-						rs.getDouble(5), rs.getTimestamp(6));
-				locations.add(location);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return locations;
+		return this.jdbcTemplate.query("select * from location order by timestamp desc",   
+                new RowMapper<Location>(){  
+              
+                    @Override  
+                    public Location mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
+        						rs.getDouble(5), rs.getTimestamp(6));
+                        return location;  
+                    }  
+        });  
 	}
 
 	/**
@@ -53,22 +48,18 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	public List<Location> findHisLocByEmpId(String empId)
 			throws RemoteException {
 
-		List<Location> locations = new ArrayList<Location>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from location where emp_id = ?");
-			stat.setString(1, empId);
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
-						rs.getDouble(5), rs.getTimestamp(6));
-				locations.add(location);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return locations;
+		return this.jdbcTemplate.query("select * from base_station where room_id = ? order by timestamp desc",
+				new Object[]{empId},   
+                new int[]{java.sql.Types.VARCHAR},
+                new RowMapper<Location>(){  
+              
+                    @Override  
+                    public Location mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
+        						rs.getDouble(5), rs.getTimestamp(6));
+                        return location;  
+                    }  
+        });  
 	}
 
 	/**
@@ -79,23 +70,18 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	public List<Location> findHisLocByTime(String fromTime, String toTime)
 			throws RemoteException {
 		
-		List<Location> locations = new ArrayList<Location>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from location where timestamp between  ? and ?");
-			stat.setString(1, fromTime);
-			stat.setString(2, toTime);
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
-						rs.getDouble(5), rs.getTimestamp(6));
-				locations.add(location);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return locations;
+		return this.jdbcTemplate.query("select * from location where timestamp between  ? and ? order by timestamp desc",
+				new Object[]{fromTime, toTime},   
+                new int[]{java.sql.Types.VARCHAR, java.sql.Types.VARCHAR},
+                new RowMapper<Location>(){  
+              
+                    @Override  
+                    public Location mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
+        						rs.getDouble(5), rs.getTimestamp(6));
+                        return location;  
+                    }  
+        });  
 	}
 
 	/**
@@ -106,24 +92,18 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	public List<Location> findHisLocByEmpIdAndTime(String empId,
 			String fromTime, String toTime) throws RemoteException {
 
-		List<Location> locations = new ArrayList<Location>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from location where emp_id = ? and timestamp between  ? and ?");
-			stat.setString(1, empId);
-			stat.setString(2, fromTime);
-			stat.setString(3, toTime);
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
-						rs.getDouble(5), rs.getTimestamp(6));
-				locations.add(location);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return locations;
+		return this.jdbcTemplate.query("select * from location where emp_id = ? and timestamp between  ? and ? order by timestamp desc",
+				new Object[]{empId, fromTime, toTime},   
+                new int[]{java.sql.Types.VARCHAR, java.sql.Types.VARCHAR, java.sql.Types.VARCHAR},
+                new RowMapper<Location>(){  
+              
+                    @Override  
+                    public Location mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
+        						rs.getDouble(5), rs.getTimestamp(6));
+                        return location;  
+                    }  
+        });  
 	}
 
 	/**
@@ -134,22 +114,18 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	public List<Location> findHisLocByRoomId(Integer roomId)
 			throws RemoteException {
 
-		List<Location> locations = new ArrayList<Location>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from location where room_id = ?");
-			stat.setInt(1, roomId);
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
-						rs.getDouble(5), rs.getTimestamp(6));
-				locations.add(location);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return locations;
+		return this.jdbcTemplate.query("select * from location where room_id = ? order by timestamp desc",
+				new Object[]{roomId},   
+                new int[]{java.sql.Types.INTEGER},
+                new RowMapper<Location>(){  
+              
+                    @Override  
+                    public Location mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
+        						rs.getDouble(5), rs.getTimestamp(6));
+                        return location;  
+                    }  
+        });  
 	}
 
 	/**
@@ -160,24 +136,18 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	public List<Location> findHisLocByRoomIdAndTime(Integer roomId,
 			String fromTime, String toTime) throws RemoteException {
 
-		List<Location> locations = new ArrayList<Location>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from location where room_id = ? and timestamp between  ? and ?");
-			stat.setInt(1, roomId);
-			stat.setString(2, fromTime);
-			stat.setString(3, toTime);
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
-						rs.getDouble(5), rs.getTimestamp(6));
-				locations.add(location);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return locations;
+		return this.jdbcTemplate.query("select * from location where room_id = ? and timestamp between  ? and ? order by timestamp desc",
+				new Object[]{roomId, fromTime, toTime},   
+                new int[]{java.sql.Types.INTEGER, java.sql.Types.VARCHAR, java.sql.Types.VARCHAR},
+                new RowMapper<Location>(){  
+              
+                    @Override  
+                    public Location mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
+        						rs.getDouble(5), rs.getTimestamp(6));
+                        return location;  
+                    }  
+        });  
 	}
 	
 }
