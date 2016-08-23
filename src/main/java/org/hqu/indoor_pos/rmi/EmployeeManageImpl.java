@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.hqu.indoor_pos.bean.BaseStation;
 import org.hqu.indoor_pos.bean.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -116,7 +117,17 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	@Override
 	public Employee getEmployeeById(String empId) throws RemoteException {
 		
-		return this.jdbcTemplate.queryForObject("select * from employee where emp_id = "+empId, Employee.class);
+		return (Employee) this.jdbcTemplate.queryForObject(  
+                "select * from employee where emp_id = ?",   
+                new Object[]{empId},  
+                new RowMapper<Employee>(){  
+  
+                    @Override  
+                    public Employee mapRow(ResultSet rs,int rowNum)throws SQLException {  
+                    	Employee employee = new Employee(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4)); 
+                        return employee;  
+                    }  
+        }); 
 	}
 
 }
