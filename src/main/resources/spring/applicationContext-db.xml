@@ -14,100 +14,89 @@
           http://www.springframework.org/schema/aop    
           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
           
-      <!-- 
-      		引入dataSource
-       -->
-      <bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations">
-			<value>classpath:jdbc.properties</value>
-		</property>
-	  </bean>
-	 
-      <bean id="dataSource" destroy-method="close"
-		class="org.apache.commons.dbcp.BasicDataSource">
-		<property name="driverClassName" value="${jdbc.driverClassName}" />
-		<property name="url" value="${jdbc.url}" />
-		<property name="username" value="${jdbc.username}" />
-		<property name="password" value="${jdbc.password}" />
-	  </bean> 
-      <!-- 
-      		把hibernate的配置文件引入进来
-       -->
-       <!-- 配置SessionFactory的第一种方式，直接引入hibernate的配置文件 -->
-     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-     	<property name="configLocation">
-     		<value>classpath:hibernate/hibernate.cfg.xml</value>
-     	</property>
-     </bean>
-     
-    <!--  配置SessionFactory的第二种方式 -->
-    <!--  <bean id="sessionFactory2" 
-     	class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-     	<property name="dataSource">
-     		<ref bean="dataSource"/>
-     	</property>
-     	
-     		指明映射文件所在的路径
-     	
-     	<property name="mappingDirectoryLocations">
-	 	
-	 			把指定路径下面的所有的映射文件全部加载完毕
-	 			  会加载指定路径下所有的映射文件
-	 		
-	 		<value>classpath:cn/itcast/shoa/domain</value>
-	 	</property>
-	 	
-	 	//<property name="mappingJarLocations">
-	 	//	<value>WEB-INF/lib/jbpm-4.4.jar</value>
-	 	//</property>
-	 	
-	 	<property name="hibernateProperties">
-	      <value>
-	        hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
-	        hibernate.show_sql=true
-	        hibernate.hbm2ddl.auto=update
-	      </value>
-	    </property>
-     </bean> -->
- <!--     
-	HibernateTemplate与session的区别如下：
-	1.使用HibernateTemplate，很重要的原因不想直接控制事务，不想直接去获取，打开Session，
-	    开始一个事务，处理异常，提交一个事务，最后关闭一个，SessionHibernateTemplate 
-	   是Hibernate操作进行封装，我们只要简单的条用HibernateTemplate 对象，传入hql和参数，
-	   就获得查询接口，把这些责任全部委托给了 HibernateTemplate，然后使用声明式的配置来实现
-	   这样的功能。如果通过类似getSession()这样的方法获得了Session，就失去了这部分功能。
-	2.在使用Spring的时候 DAO类继承了 HibernateDaoSupport 类又因为HibernateDaoSupport 类
-	   里面有个属性 hibernateTemplate;所以就可以进行设置注，也就是Spring的一大优点面向切面式
-	   编程，进行设置注入，在Tomcat启动的时候由 Tomcat 加载 ApplicationContext.xml，配置文件
-	   给 hibernateTemplate赋值，这样的话就实现了，在使用某个对象之前不用给他实例化 
- -->
-     <bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
-     	<property name="sessionFactory">
-     		<ref bean="sessionFactory"/>
-     	</property>
-     </bean>
-     
-     <!-- 
-     	事务管理器
-     	    告诉spring容器开启事务用什么技术
-      -->
-     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-     	<property name="sessionFactory">
-     		<ref bean="sessionFactory"/>
-     	</property>
-     </bean>
-     
- <!--     <tx:advice id="tx" transaction-manager="transactionManager">
-     	<tx:attributes>
-     		<tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED" read-only="false"/>
-     	</tx:attributes>
-     </tx:advice>
-     
-     <aop:config>
-     	<aop:pointcut expression="execution(* cn.itcast.shoa.service.impl.*.*(..))" id="perform"/>
-    	<aop:advisor advice-ref="tx" pointcut-ref="perform"/>
-     </aop:config> -->
-     
-     <tx:annotation-driven transaction-manager="transactionManager"/>
+	<!-- 包扫描 
+	<context:component-scan base-package="*.**"/>
+	-->
+	
+   	<!-- Spring自带  
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">  
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>  
+        <property name="url" value="${jdbc.url}"/>  
+        <property name="username" value="${jdbc.username}"/>  
+        <property name="password" value="${jdbc.password}"/>  
+    </bean>  
+    -->  
+         
+    <!-- 指明配置文件存放位置 -->
+    <context:property-placeholder location="jdbc.properties"/>  
+    
+    <!-- c3p0   
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">  
+        <property name="driverClass" value="${jdbc.driverClassName}"/>  
+        <property name="jdbcUrl" value="${jdbc.url}"/>  
+        <property name="user" value="${jdbc.username}"/>  
+        <property name="password" value="${jdbc.password}"/>  
+    </bean>  
+	-->      
+	
+    <!-- DBCP  
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
+        <property name="driverClassName" value="${jdbc.driverClassName}"/>  
+        <property name="url" value="${jdbc.url}"/>  
+        <property name="username" value="${jdbc.username}"/>  
+        <property name="password" value="${jdbc.password}"/>  
+        <property name="initialSize" value="1"></property>  
+        <property name="maxActive" value="100"></property>  
+        <property name="maxIdle" value="2"></property>  
+        <property name="minIdle" value="1"></property>  
+    </bean>  
+    --> 
+      
+    <!-- druid  -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!-- 基本属性 url、user、password -->
+      	<property name="url" value="${jdbc.url}" />
+      	<property name="username" value="${jdbc.username}" />
+      	<property name="password" value="${jdbc.password}" />
+
+      	<!-- 配置初始化大小、最小、最大 -->
+      	<property name="initialSize" value="3" />
+      	<property name="minIdle" value="1" /> 
+      	<property name="maxActive" value="20" />
+
+      	<!-- 配置获取连接等待超时的时间 -->
+      	<property name="maxWait" value="60000" />
+
+      	<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+      	<property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+      	<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+      	<property name="minEvictableIdleTimeMillis" value="300000" />
+
+      	<property name="validationQuery" value="SELECT 'x'" />
+      	<property name="testWhileIdle" value="true" />
+      	<property name="testOnBorrow" value="false" />
+      	<property name="testOnReturn" value="false" />
+		<!-- mysql 不支持 poolPreparedStatements-->  
+      	<!-- 打开PSCache，并且指定每个连接上PSCache的大小 -->
+      	<!--<property name="poolPreparedStatements" value="true" />-->
+      	<!--<property name="maxPoolPreparedStatementPerConnectionSize" value="20" />-->
+
+      	<!-- 配置监控统计拦截的filters -->
+      	<property name="filters" value="stat" /> 
+    </bean>  
+    
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    	<constructor-arg ref="dataSource"/>
+    </bean>
+       
+       
+    <!-- <bean id="test" class="test.test">
+    	<property name="j" ref="jdbcTemplate"></property>
+    </bean>    -->
+    
+	<!-- 配置事务管理器 -->
+    <bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
 </beans>
