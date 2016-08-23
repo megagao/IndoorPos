@@ -2,21 +2,23 @@ package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hqu.indoor_pos.bean.Employee;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
 
 public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeManage{
 
 	private static final long serialVersionUID = 1L;
 	
-	private Connection conn = DBUtil.getConnection();
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	public EmployeeManageImpl() throws RemoteException {
 		super();
@@ -28,20 +30,15 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	@Override
 	public List<Employee> findAllEmp() throws RemoteException {
 		
-		List<Employee> employees = new ArrayList<Employee>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from employee");
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				Employee employee = new Employee(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4));
-				employees.add(employee);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return employees;
+		return this.jdbcTemplate.query("select * from employee",   
+                new RowMapper<Employee>(){  
+              
+                    @Override  
+                    public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	Employee employee = new Employee(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4));
+                        return employee;  
+                    }  
+        });  
 	}
 
 	/**
@@ -52,14 +49,9 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	public boolean saveEmployee(Employee employee) throws RemoteException {
 		
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("insert into employee values(?,?,?,?)");
-			stat.setString(1, employee.getEmpId());
-			stat.setString(2, employee.getName());
-			stat.setString(3, employee.getSex());
-			stat.setString(4, employee.getTerminalId());
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update("insert into employee values(?,?,?,?)",   
+	                new Object[]{employee.getEmpId(), employee.getName(), employee.getSex(), employee.getTerminalId()}); 
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -71,17 +63,22 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	 * @param employee
 	 */
 	@Override
-	public boolean updateEmployee(Employee employee) throws RemoteException {
+	public boolean updateEmployee(final Employee employee) throws RemoteException {
 		
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("update employee set name = ?, sex = ?, terminal_id = ? where emp_id = ?");
-			stat.setString(1, employee.getName());
-			stat.setString(2, employee.getSex());
-			stat.setString(3, employee.getTerminalId());
-			stat.setString(4, employee.getEmpId());
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update(  
+					"update employee set name = ?, sex = ?, terminal_id = ? where emp_id = ?",   
+	                new PreparedStatementSetter(){  
+	                    @Override  
+	                    public void setValues(PreparedStatement ps) throws SQLException {  
+	                        ps.setString(1, employee.getName());
+	                        ps.setString(2, employee.getSex());
+	                        ps.setString(3, employee.getTerminalId());
+	                        ps.setString(4, employee.getEmpId());
+	                    }  
+	                }  
+	        );  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -93,14 +90,19 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	 * @param empId
 	 */
 	@Override
-	public boolean deleteEmployee(String empId) throws RemoteException {
+	public boolean deleteEmployee(final String empId) throws RemoteException {
 		
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("delete from employee  where emp_id = ?");
-			stat.setString(1,empId);
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update(  
+					"delete from employee  where emp_id = ?",   
+	                new PreparedStatementSetter(){  
+	                    @Override  
+	                    public void setValues(PreparedStatement ps) throws SQLException {  
+	                        ps.setString(1, empId);  
+	                    }  
+	                }  
+	        );  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -114,19 +116,7 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	@Override
 	public Employee getEmployeeById(String empId) throws RemoteException {
 		
-		Employee employee = null;
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from employee where emp_id = ?");
-			stat.setString(1, empId);
-			ResultSet rs = stat.executeQuery();
-			rs.next();
-			employee = new Employee(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return employee;
+		return this.jdbcTemplate.queryForObject("select * from employee where emp_id = "+empId, Employee.class);
 	}
 
 }
