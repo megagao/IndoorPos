@@ -1,6 +1,5 @@
 package org.hqu.indoor_pos.test;
 
-import java.awt.Toolkit;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,26 +30,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import com.hqu.indoor_pos.algorithm.Centroid;
-import com.hqu.indoor_pos.algorithm.Dealer;
-import com.hqu.indoor_pos.algorithm.DoGroup;
-import com.hqu.indoor_pos.algorithm.Revise;
-import com.hqu.indoor_pos.bean.BaseStation;
-import com.hqu.indoor_pos.bean.BleBase;
-import com.hqu.indoor_pos.bean.Employee;
-import com.hqu.indoor_pos.bean.EnvFactor;
-import com.hqu.indoor_pos.bean.Location;
-import com.hqu.indoor_pos.bean.LoginUser;
-import com.hqu.indoor_pos.bean.RoomInfo;
-import com.hqu.indoor_pos.bean.Round;
-import com.hqu.indoor_pos.rmi.BaseStationManage;
-import com.hqu.indoor_pos.rmi.BaseStationManageImpl;
-import com.hqu.indoor_pos.rmi.Login;
-import com.hqu.indoor_pos.rmi.LoginImpl;
-import com.hqu.indoor_pos.rmi.RoomManage;
-import com.hqu.indoor_pos.rmi.RoomManageImpl;
-import com.hqu.indoor_pos.server.Server;
-import com.hqu.indoor_pos.util.DBUtil;
+import org.hqu.indoor_pos.algorithm.Centroid;
+import org.hqu.indoor_pos.algorithm.Dealer;
+import org.hqu.indoor_pos.algorithm.DoGroup;
+import org.hqu.indoor_pos.algorithm.Revise;
+import org.hqu.indoor_pos.bean.BaseStation;
+import org.hqu.indoor_pos.bean.BleBase;
+import org.hqu.indoor_pos.bean.Employee;
+import org.hqu.indoor_pos.bean.EnvFactor;
+import org.hqu.indoor_pos.bean.Location;
+import org.hqu.indoor_pos.bean.LoginUser;
+import org.hqu.indoor_pos.bean.RoomInfo;
+import org.hqu.indoor_pos.bean.Round;
+import org.hqu.indoor_pos.rmi.BaseStationManage;
+import org.hqu.indoor_pos.rmi.BaseStationManageImpl;
+import org.hqu.indoor_pos.rmi.Login;
+import org.hqu.indoor_pos.rmi.LoginImpl;
+import org.hqu.indoor_pos.rmi.RoomManage;
+import org.hqu.indoor_pos.rmi.RoomManageImpl;
+import org.hqu.indoor_pos.server.Server;
+import org.hqu.indoor_pos.util.DBUtil;
 
 public class test {
 	@Test
