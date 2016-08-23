@@ -154,8 +154,7 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
                     	BaseStation baseStation  = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));  
                         return baseStation;  
                     }  
-              
-        }); //class是结果数据的java类型  
+        }); 
 	}
 	
 }
