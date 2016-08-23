@@ -1,6 +1,4 @@
 package org.hqu.indoor_pos.algorithm;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -14,7 +12,9 @@ import org.hqu.indoor_pos.bean.Coordinate;
 import org.hqu.indoor_pos.bean.Location;
 import org.hqu.indoor_pos.bean.Round;
 import org.hqu.indoor_pos.server.Server;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 
 /**
  * created on 2016年8月22日
@@ -32,6 +32,9 @@ public class Centroid implements Dealer{
 	/*定位结果*/
 	private Location location;
 	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
 	@Override
 	public Location getLocation(String str){
 		
@@ -47,42 +50,19 @@ public class Centroid implements Dealer{
 			return null;
 		}
 		
-		Connection conn = DBUtil.getConnection();
-		
 		String maxRssiBaseId = uniqueBases.get(0).getId();
 		
-		/*根据rssi值最大的基站去数据库中查找相应的坐标系id*/
-		try {
-			PreparedStatement stat = conn.prepareStatement("select coordinate_id from base_station where base_id="+maxRssiBaseId);
-			ResultSet rs = stat.executeQuery();
-			rs.next();
-			location.setRoomId(rs.getInt(1));
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} 
+		/*根据rssi值最大的基站去数据库中查找相应的房间id*/
+		int rooId = this.jdbcTemplate.queryForObject("select room_id from base_station where base_id="+maxRssiBaseId, Integer.class);
+		location.setRoomId(rooId);
 		
 		/*拿到终端id*/
 		String[] str1 = str.split(";");
 		String terminalId = str1[str1.length-1];
 		
 		/*查找该终端对应的员工id*/
-		try {
-			PreparedStatement stat1 = conn.prepareStatement("select emp_id from employee where terminal_id="+terminalId);
-			ResultSet rs1 = stat1.executeQuery();
-			rs1.next();
-			location.setEmpId(rs1.getString(1));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally{
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		String empId = this.jdbcTemplate.queryForObject("select emp_id from employee where terminal_id="+terminalId, String.class);
+		location.setEmpId(empId);
 		
 		/*求组合数*/
 		Integer[] a = doGrouper.getA();
@@ -126,7 +106,6 @@ public class Centroid implements Dealer{
 		
 		return location;
 	}
-
 	
 	/**
 	 * @description: 求出通过该组基站距离加权后的坐标
@@ -137,7 +116,7 @@ public class Centroid implements Dealer{
 	public double[] calculate(List<BleBase> bases){
 		
 		/*基站的id与坐标*/
-		Map<String, double[]> basesLocation =new HashMap<String, double[]>();
+		final Map<String, double[]> basesLocation =new HashMap<String, double[]>();
 		
 		/*距离数组*/
 		double[] distanceArray = new double[3];
@@ -169,24 +148,18 @@ public class Centroid implements Dealer{
 		
 		/*基站的坐标信息应当根据id去数据库中查找*/
 		/*如果每次参加运算的基站数大于3，可以用StringBuilder拼接sql语句*/
-		try {
-			Connection conn= DBUtil.getConnection();
-			PreparedStatement stat = conn.prepareStatement("select base_id,x_axis,y_axis from base_station where base_id in (?,?,?)");
-			for(int k=0;k<j;k++){
-				stat.setString(k+1, ids[k]);
-			}
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				double[] loc1 = new double[2];
-				loc1[0]=rs.getDouble(2);
-				loc1[1]=rs.getDouble(3);
-				basesLocation.put(rs.getString(1), loc1);
-			}
-			conn.close();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.jdbcTemplate.query("select base_id,x_axis,y_axis from base_station where base_id in (?,?,?)",   
+                new Object[] { ids[0],ids[1],ids[2]},   
+                new RowCallbackHandler() {     
+              
+                    @Override    
+                    public void processRow(ResultSet rs) throws SQLException {
+                    	double[] loc1 = new double[2];
+        				loc1[0]=rs.getDouble(2);
+        				loc1[1]=rs.getDouble(3);
+        				basesLocation.put(rs.getString(1), loc1);
+                    }     
+        });   
 		
 		Round r[] = new Round[3];
 		/*数组a初始化*/
