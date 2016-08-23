@@ -50,7 +50,7 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	public boolean saveEmployee(Employee employee) throws RemoteException {
 		
 		try {
-			this.jdbcTemplate.update("insert into employee values(?,?,?,?)",   
+			this.jdbcTemplate.update("insert into employee values(?, ?, ?, ?)",   
 	                new Object[]{employee.getEmpId(), employee.getName(), employee.getSex(), employee.getTerminalId()}); 
 		} catch (Exception e) {
 			e.printStackTrace();
