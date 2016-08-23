@@ -144,7 +144,18 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	@Override
 	public BaseStation getBaseStationById(String baseId) throws RemoteException {
 		
-		return this.jdbcTemplate.queryForObject("select * from base_station where base_id = "+baseId, BaseStation.class);
+		return (BaseStation) this.jdbcTemplate.queryForObject(  
+                "select * from base_station where base_id = ?",   
+                new Object[]{baseId},  
+                new RowMapper<BaseStation>(){  
+  
+                    @Override  
+                    public BaseStation mapRow(ResultSet rs,int rowNum)throws SQLException {  
+                    	BaseStation baseStation  = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));  
+                        return baseStation;  
+                    }  
+              
+        }); //class是结果数据的java类型  
 	}
-
+	
 }
