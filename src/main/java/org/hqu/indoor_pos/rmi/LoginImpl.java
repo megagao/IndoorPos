@@ -2,18 +2,21 @@ package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.hqu.indoor_pos.bean.LoginUser;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 public class LoginImpl extends UnicastRemoteObject implements Login{
 
 	private static final long serialVersionUID = 1L;
 
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+	
 	public LoginImpl() throws RemoteException {
 		super();
 	}
@@ -25,26 +28,22 @@ public class LoginImpl extends UnicastRemoteObject implements Login{
 	@Override
 	public LoginUser login(String str) throws RemoteException {
 		
-		LoginUser li = null;
-		
 		String[] str1 = str.split(",");
-		
-		Connection conn = DBUtil.getConnection();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from login where username = ? and password = ?");
-			stat.setString(1, str1[0]);
-			stat.setString(2, str1[1]);
-			ResultSet rs = stat.executeQuery();
-			if(rs.next()){
-				li = new LoginUser(rs.getString(2), rs.getString(3), rs.getString(4));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		try{
+			LoginUser loginUser = (LoginUser) this.jdbcTemplate.queryForObject(  
+	                "select * from login where username = ? and password = ?",   
+	                new Object[]{str1[0], str1[1]},  
+	                new RowMapper<LoginUser>(){  
+	  
+	                    @Override  
+	                    public LoginUser mapRow(ResultSet rs,int rowNum)throws SQLException {  
+	                    	LoginUser lu = new LoginUser(rs.getString(2), rs.getString(3), rs.getString(4));  
+	                        return lu;  
+	                    }  
+	        });
+			return loginUser;
+		}catch(Exception e){
+			return null;
 		}
-		
-		return li;
 	}
-
 }
