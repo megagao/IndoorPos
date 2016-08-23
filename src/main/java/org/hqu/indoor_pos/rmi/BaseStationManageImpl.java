@@ -40,7 +40,6 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
                         return base;  
                     }  
         });  
-		
 	}
 	
 	/**
@@ -61,7 +60,6 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
                         return base;  
                     }  
         });  
-		
 	}
 
 	/**
