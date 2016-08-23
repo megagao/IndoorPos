@@ -6,21 +6,23 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Blob;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hqu.indoor_pos.bean.RoomInfo;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
 
 public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 
 	private static final long serialVersionUID = 1L;
 
-	private Connection conn = DBUtil.getConnection();
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	
 	public RoomManageImpl() throws RemoteException {
 		super();
@@ -32,21 +34,16 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	@Override
 	public List<RoomInfo> findAllRoomInfo() throws RemoteException {
 		
-		List<RoomInfo> roomInfos = new ArrayList<RoomInfo>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from room");
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				Blob blob = rs.getBlob(3);
-				RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), blobToBytes(blob), rs.getInt(4));
-				roomInfos.add(roomInfo);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return roomInfos;
+		return this.jdbcTemplate.query("select * from room",   
+                new RowMapper<RoomInfo>(){  
+              
+                    @Override  
+                    public RoomInfo mapRow(ResultSet rs, int rowNum) throws SQLException { 
+                    	Blob blob = rs.getBlob(3);
+                    	RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), blobToBytes(blob), rs.getInt(4));
+                        return roomInfo;  
+                    }  
+        });  
 	}
 	
 	/**
@@ -55,20 +52,15 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	@Override
 	public List<String> findRoomList() throws RemoteException {
 		
-		List<String> roomNames = new ArrayList<String>();
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select room_name from room order by room_id");
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				String roomName = rs.getString(1);
-				roomNames.add(roomName);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return roomNames;
+		return this.jdbcTemplate.query("select room_name from room order by room_id",   
+                new RowMapper<String>(){  
+              
+                    @Override  
+                    public String mapRow(ResultSet rs, int rowNum) throws SQLException { 
+                    	String roomName = rs.getString(1);
+                        return roomName;  
+                    }  
+        });  
 	}
 	
 	/**
@@ -78,20 +70,19 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	@Override
 	public RoomInfo getRoomInfoByName(String roomName) throws RemoteException {
 		
-		RoomInfo roomInfo = null;
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from room where room_name = ?");
-			stat.setString(1, roomName);
-			ResultSet rs = stat.executeQuery();
-			rs.next();
-			Blob blob = rs.getBlob(3);
-			roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), blobToBytes(blob), rs.getInt(4));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return roomInfo;
+		return (RoomInfo) this.jdbcTemplate.queryForObject(  
+                "select * from room where room_name = ?",   
+                new Object[]{roomName}, 
+                new int[]{java.sql.Types.VARCHAR},
+                new RowMapper<RoomInfo>(){  
+  
+                    @Override  
+                    public RoomInfo mapRow(ResultSet rs,int rowNum)throws SQLException {
+                    	Blob blob = rs.getBlob(3);
+                    	RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), blobToBytes(blob), rs.getInt(4));
+                        return roomInfo;  
+                    }  
+        }); 
 	}
 
 	/**
@@ -101,20 +92,19 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	@Override
 	public RoomInfo getRoomInfoById(Integer roomId) throws RemoteException {
 		
-		RoomInfo roomInfo = null;
-		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from room where room_id = ?");
-			stat.setInt(1, roomId);
-			ResultSet rs = stat.executeQuery();
-			rs.next();
-			Blob blob = rs.getBlob(3);
-			roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), blobToBytes(blob), rs.getInt(4));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return roomInfo;
+		return (RoomInfo) this.jdbcTemplate.queryForObject(  
+                "select * from room where room_id = ?",   
+                new Object[]{roomId}, 
+                new int[]{java.sql.Types.INTEGER},
+                new RowMapper<RoomInfo>(){  
+  
+                    @Override  
+                    public RoomInfo mapRow(ResultSet rs,int rowNum)throws SQLException {
+                    	Blob blob = rs.getBlob(3);
+                    	RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), blobToBytes(blob), rs.getInt(4));
+                        return roomInfo;  
+                    }  
+        }); 
 	}
 
 	/**
@@ -122,18 +112,23 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * @param roomInfo
 	 */
 	@Override
-	public boolean saveRoomInfo(RoomInfo roomInfo) throws RemoteException {
+	public boolean saveRoomInfo(final RoomInfo roomInfo) throws RemoteException {
 		
 		try {
-			byte[] layoutImageData = roomInfo.getLayoutImage();
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("insert into room values (?, ?, ?, ?)");
-			stat.setInt(1, roomInfo.getRoomId());
-			stat.setString(2, roomInfo.getRoomName());
-			stat.setBinaryStream(3, new ByteArrayInputStream(layoutImageData), layoutImageData.length);
-			stat.setInt(4, roomInfo.getPixelsPerM());
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			final byte[] layoutImageData = roomInfo.getLayoutImage();
+			this.jdbcTemplate.update(  
+					"insert into room values (?, ?, ?, ?)",   
+	                new PreparedStatementSetter(){  
+	                    @Override  
+	                    public void setValues(PreparedStatement ps) throws SQLException {  
+	                        ps.setInt(1, roomInfo.getRoomId());
+	                        ps.setString(2, roomInfo.getRoomName());
+	                        ps.setBinaryStream(3, new ByteArrayInputStream(layoutImageData), layoutImageData.length);
+	                        ps.setInt(4, roomInfo.getPixelsPerM());
+	                    }  
+	                }  
+	        );  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -145,17 +140,23 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * @param roomInfo
 	 */
 	@Override
-	public boolean updateRoomInfo(RoomInfo roomInfo) throws RemoteException {
+	public boolean updateRoomInfo(final RoomInfo roomInfo) throws RemoteException {
+		
 		try {
-			byte[] layoutImageData = roomInfo.getLayoutImage();
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("update room set room_name = ?, layout_image = ?, pixels_per_m = ? where room_id = ?");
-			stat.setString(1, roomInfo.getRoomName());
-			stat.setBinaryStream(2, new ByteArrayInputStream(layoutImageData), layoutImageData.length);
-			stat.setInt(3, roomInfo.getPixelsPerM());
-			stat.setInt(4, roomInfo.getRoomId());
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			final byte[] layoutImageData = roomInfo.getLayoutImage();
+			this.jdbcTemplate.update(  
+					"update room set room_name = ?, layout_image = ?, pixels_per_m = ? where room_id = ?",   
+	                new PreparedStatementSetter(){  
+	                    @Override  
+	                    public void setValues(PreparedStatement ps) throws SQLException {  
+	                        ps.setString(1, roomInfo.getRoomName());
+	                        ps.setBinaryStream(2, new ByteArrayInputStream(layoutImageData), layoutImageData.length);
+	                        ps.setInt(3, roomInfo.getPixelsPerM());
+	                        ps.setInt(4, roomInfo.getRoomId());
+	                    }  
+	                }  
+	        );  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -167,14 +168,19 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * @param roomId
 	 */
 	@Override
-	public boolean deleteRoomInfo(Integer roomId) throws RemoteException {
+	public boolean deleteRoomInfo(final Integer roomId) throws RemoteException {
 		
 		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("delete from room  where room_id = ?");
-			stat.setInt(1,roomId);
-			stat.executeUpdate();
-		} catch (SQLException e) {
+			this.jdbcTemplate.update(  
+					"delete from room  where room_id = ?",   
+	                new PreparedStatementSetter(){  
+	                    @Override  
+	                    public void setValues(PreparedStatement ps) throws SQLException {  
+	                        ps.setInt(1,roomId); 
+	                    }  
+	                }  
+	        );  
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
