@@ -1,7 +1,5 @@
 package org.hqu.indoor_pos.server;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
@@ -12,7 +10,9 @@ import org.hqu.indoor_pos.algorithm.Dealer;
 import org.hqu.indoor_pos.algorithm.Trilateral;
 import org.hqu.indoor_pos.bean.Location;
 import org.hqu.indoor_pos.util.CopyOnWriteMap;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -45,6 +45,9 @@ public class Server {
 	/*环境因子的查询缓存*/
 	public static Map<Integer, Double[]> envFactors;
 	
+	@Autowired
+	private static JdbcTemplate jdbcTemplate;
+	
     public static void main(String[] args) throws Exception {
     	
         int port = 50006;
@@ -61,41 +64,33 @@ public class Server {
         
         envFactors = new CopyOnWriteMap<Integer, Double[]>();
         
-        Connection conn = DBUtil.getConnection();
-        
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select * from env_factor");
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				envFactors.put(rs.getInt(1), new Double[]{rs.getDouble(2), rs.getDouble(3), rs.getDouble(4)});
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        jdbcTemplate.query("select * from env_factor",   
+                new RowCallbackHandler() {     
+              
+                    @Override    
+                    public void processRow(ResultSet rs) throws SQLException {     
+                    	envFactors.put(rs.getInt(1), new Double[]{rs.getDouble(2), rs.getDouble(3), rs.getDouble(4)});
+                    }     
+        });   
 		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select terminal_id, emp_id from employee");
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				empIds.put(rs.getString(1), rs.getString(2));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        jdbcTemplate.query("select terminal_id, emp_id from employee",   
+                new RowCallbackHandler() {     
+              
+                    @Override    
+                    public void processRow(ResultSet rs) throws SQLException {     
+                    	empIds.put(rs.getString(1), rs.getString(2));
+                    }     
+        });   
 		
-		try {
-			PreparedStatement stat; 
-			stat = conn.prepareStatement("select base_id, room_id, x_axis, y_axis from base_station");
-			ResultSet rs = stat.executeQuery();
-			while(rs.next()){
-				roomIds.put(rs.getString(1), rs.getInt(2));
-				baseStationLocs.put(rs.getString(1), new Double[]{rs.getDouble(3), rs.getDouble(4)});
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        jdbcTemplate.query("select base_id, room_id, x_axis, y_axis from base_station",   
+                new RowCallbackHandler() {     
+              
+                    @Override    
+                    public void processRow(ResultSet rs) throws SQLException {     
+                    	roomIds.put(rs.getString(1), rs.getInt(2));
+        				baseStationLocs.put(rs.getString(1), new Double[]{rs.getDouble(3), rs.getDouble(4)});
+                    }     
+        });   
 		
         if (args != null && args.length > 0) {
             try {
