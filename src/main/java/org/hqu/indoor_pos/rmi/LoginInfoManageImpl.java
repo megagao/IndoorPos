@@ -1,7 +1,6 @@
 package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,9 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
-public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInfoManage{
-
-	private static final long serialVersionUID = 1L;
+public class LoginInfoManageImpl implements LoginInfoManage{
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -28,14 +25,15 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	 * 查找所有用户信息
 	 */
 	@Override
-	public List<LoginUser> findAllLoginUser() throws RemoteException {
+	public List<LoginUser> findAllLoginUser() {
 
 		return this.jdbcTemplate.query("select * from login",   
                 new RowMapper<LoginUser>(){  
               
                     @Override  
                     public LoginUser mapRow(ResultSet rs, int rowNum) throws SQLException {  
-                    	LoginUser loginUser = new LoginUser(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4));
+                    	LoginUser loginUser = new LoginUser(rs.getString(1), rs.getString(2), 
+                    			rs.getString(3), rs.getString(4));
                         return loginUser;  
                     }  
         });  
@@ -46,11 +44,12 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	 * @param loginUser
 	 */
 	@Override
-	public boolean saveLoginUser(LoginUser loginUser) throws RemoteException {
+	public boolean saveLoginUser(LoginUser loginUser) {
 		
 		try {
 			this.jdbcTemplate.update("insert into login values (?, ?, ?, ?)",   
-	                new Object[]{loginUser.getUserId(), loginUser.getUsername(), loginUser.getPassword(), loginUser.getRole()}); 
+	                new Object[]{loginUser.getUserId(), loginUser.getUsername(),
+						loginUser.getPassword(), loginUser.getRole()}); 
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -63,7 +62,7 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	 * @param loginUser
 	 */
 	@Override
-	public boolean updateLoginUser(final LoginUser loginUser) throws RemoteException {
+	public boolean updateLoginUser(final LoginUser loginUser) {
 		
 		try {
 			this.jdbcTemplate.update(  
@@ -90,7 +89,7 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	 * @param userId
 	 */
 	@Override
-	public boolean deleteLoginUser(final String userId) throws RemoteException {
+	public boolean deleteLoginUser(final String userId) {
 		
 		try {
 			this.jdbcTemplate.update(  
@@ -114,7 +113,7 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
 	 * @param userId
 	 */
 	@Override
-	public LoginUser getLoginUserById(final String userId) throws RemoteException {
+	public LoginUser getLoginUserById(final String userId) {
 		
 		return (LoginUser) this.jdbcTemplate.queryForObject(  
                 "select * from login where user_id = ?",   
@@ -123,7 +122,8 @@ public class LoginInfoManageImpl extends UnicastRemoteObject implements LoginInf
   
                     @Override  
                     public LoginUser mapRow(ResultSet rs,int rowNum)throws SQLException {  
-                    	LoginUser loginUser = new LoginUser(userId, rs.getString(2), rs.getString(3), rs.getString(4));  
+                    	LoginUser loginUser = new LoginUser(userId, rs.getString(2),
+                    			rs.getString(3), rs.getString(4));  
                         return loginUser;  
                     }  
         }); 
