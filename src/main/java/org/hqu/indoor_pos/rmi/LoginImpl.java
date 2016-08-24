@@ -1,7 +1,6 @@
 package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -10,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-public class LoginImpl extends UnicastRemoteObject implements Login{
-
-	private static final long serialVersionUID = 1L;
+public class LoginImpl implements Login{
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -26,7 +23,7 @@ public class LoginImpl extends UnicastRemoteObject implements Login{
 	 * @param str
 	 */
 	@Override
-	public LoginUser login(String str) throws RemoteException {
+	public LoginUser login(String str) {
 		
 		String[] str1 = str.split(",");
 		try{
