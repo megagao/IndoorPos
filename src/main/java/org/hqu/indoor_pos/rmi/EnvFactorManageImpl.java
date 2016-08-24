@@ -1,7 +1,6 @@
 package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,9 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
-public class EnvFactorManageImpl extends UnicastRemoteObject implements EnvFactorManage{
-
-	private static final long serialVersionUID = 1L;
+public class EnvFactorManageImpl implements EnvFactorManage{
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -29,7 +26,7 @@ public class EnvFactorManageImpl extends UnicastRemoteObject implements EnvFacto
 	 * 查找所有房间的环境因子
 	 */
 	@Override
-	public List<EnvFactor> findAllEnvFactor() throws RemoteException {
+	public List<EnvFactor> findAllEnvFactor() {
 		
 		return this.jdbcTemplate.query("select * from env_factor",   
                 new RowMapper<EnvFactor>(){  
@@ -47,8 +44,7 @@ public class EnvFactorManageImpl extends UnicastRemoteObject implements EnvFacto
 	 * @param roomId
 	 */
 	@Override
-	public EnvFactor findEnvFactorByRoomId(Integer roomId)
-			throws RemoteException {
+	public EnvFactor findEnvFactorByRoomId(Integer roomId) {
 
 		return (EnvFactor) this.jdbcTemplate.queryForObject(  
                 "select * from env_factor where room_id = ?",   
@@ -68,8 +64,7 @@ public class EnvFactorManageImpl extends UnicastRemoteObject implements EnvFacto
 	 * @param envFactor
 	 */
 	@Override
-	public boolean saveEnvFactor(EnvFactor envFactor)
-			throws RemoteException {
+	public boolean saveEnvFactor(EnvFactor envFactor) {
 		
 		this.jdbcTemplate.update("insert into env_factor (room_id, height, atten_factor, p0) values (?, ?, ?, ?)",   
                 new Object[]{envFactor.getRoomId(), envFactor.getHeight(), envFactor.getN(), envFactor.getP0()}); 
@@ -90,8 +85,7 @@ public class EnvFactorManageImpl extends UnicastRemoteObject implements EnvFacto
 	 * @param envFactor
 	 */
 	@Override
-	public boolean updateEnvFactor(final EnvFactor envFactor)
-			throws RemoteException {
+	public boolean updateEnvFactor(final EnvFactor envFactor) {
 		
 		try {
 			this.jdbcTemplate.update(  
@@ -119,7 +113,7 @@ public class EnvFactorManageImpl extends UnicastRemoteObject implements EnvFacto
 	 * @param roomId
 	 */
 	@Override
-	public boolean deleteEnvFactor(final Integer roomId) throws RemoteException {
+	public boolean deleteEnvFactor(final Integer roomId) {
 		
 		try {
 			this.jdbcTemplate.update(  
