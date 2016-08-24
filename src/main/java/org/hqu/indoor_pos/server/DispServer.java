@@ -23,9 +23,6 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 
 public class DispServer {
 
-	/*显示客户端连接端口号*/
-    public static final int DISP_SERVERPORT = 5005;
-    
     /*定位结果传输端口号*/
     public static final int DISP_PORT = 5006;
     
@@ -78,6 +75,7 @@ public class DispServer {
 			}
         	
         	locsToDB.put(++i, loc);
+        	
         	/*每15条存一次数据库*/
         	if(i == 15){
         		for (int k=1; k<=i; k++){
