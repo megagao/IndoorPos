@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,9 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
-public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
-
-	private static final long serialVersionUID = 1L;
+public class RoomManageImpl implements RoomManage{
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -32,7 +29,7 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * 查找所有房间信息
 	 */
 	@Override
-	public List<RoomInfo> findAllRoomInfo() throws RemoteException {
+	public List<RoomInfo> findAllRoomInfo() {
 		
 		return this.jdbcTemplate.query("select * from room",   
                 new RowMapper<RoomInfo>(){  
@@ -40,7 +37,8 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
                     @Override  
                     public RoomInfo mapRow(ResultSet rs, int rowNum) throws SQLException { 
                     	Blob blob = rs.getBlob(3);
-                    	RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), blobToBytes(blob), rs.getInt(4));
+                    	RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2),
+                    			blobToBytes(blob), rs.getInt(4));
                         return roomInfo;  
                     }  
         });  
@@ -50,7 +48,7 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * 得到房间列表
 	 */
 	@Override
-	public List<String> findRoomList() throws RemoteException {
+	public List<String> findRoomList() {
 		
 		return this.jdbcTemplate.query("select room_name from room order by room_id",   
                 new RowMapper<String>(){  
@@ -68,7 +66,7 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * @param roomName  
 	 */
 	@Override
-	public RoomInfo getRoomInfoByName(String roomName) throws RemoteException {
+	public RoomInfo getRoomInfoByName(String roomName) {
 		
 		return (RoomInfo) this.jdbcTemplate.queryForObject(  
                 "select * from room where room_name = ?",   
@@ -79,7 +77,8 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
                     @Override  
                     public RoomInfo mapRow(ResultSet rs,int rowNum)throws SQLException {
                     	Blob blob = rs.getBlob(3);
-                    	RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), blobToBytes(blob), rs.getInt(4));
+                    	RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2),
+                    			blobToBytes(blob), rs.getInt(4));
                         return roomInfo;  
                     }  
         }); 
@@ -90,7 +89,7 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * @param roomId
 	 */
 	@Override
-	public RoomInfo getRoomInfoById(Integer roomId) throws RemoteException {
+	public RoomInfo getRoomInfoById(Integer roomId) {
 		
 		return (RoomInfo) this.jdbcTemplate.queryForObject(  
                 "select * from room where room_id = ?",   
@@ -101,7 +100,8 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
                     @Override  
                     public RoomInfo mapRow(ResultSet rs,int rowNum)throws SQLException {
                     	Blob blob = rs.getBlob(3);
-                    	RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), blobToBytes(blob), rs.getInt(4));
+                    	RoomInfo roomInfo = new RoomInfo(rs.getInt(1), rs.getString(2), 
+                    			blobToBytes(blob), rs.getInt(4));
                         return roomInfo;  
                     }  
         }); 
@@ -112,7 +112,7 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * @param roomInfo
 	 */
 	@Override
-	public boolean saveRoomInfo(final RoomInfo roomInfo) throws RemoteException {
+	public boolean saveRoomInfo(final RoomInfo roomInfo) {
 		
 		try {
 			final byte[] layoutImageData = roomInfo.getLayoutImage();
@@ -140,7 +140,7 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * @param roomInfo
 	 */
 	@Override
-	public boolean updateRoomInfo(final RoomInfo roomInfo) throws RemoteException {
+	public boolean updateRoomInfo(final RoomInfo roomInfo) {
 		
 		try {
 			final byte[] layoutImageData = roomInfo.getLayoutImage();
@@ -168,7 +168,7 @@ public class RoomManageImpl extends UnicastRemoteObject implements RoomManage{
 	 * @param roomId
 	 */
 	@Override
-	public boolean deleteRoomInfo(final Integer roomId) throws RemoteException {
+	public boolean deleteRoomInfo(final Integer roomId) {
 		
 		try {
 			this.jdbcTemplate.update(  
