@@ -29,7 +29,10 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
-
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.Assert;
 import org.hqu.indoor_pos.algorithm.Centroid;
 import org.hqu.indoor_pos.algorithm.Dealer;
 import org.hqu.indoor_pos.algorithm.DoGroup;
@@ -49,10 +52,11 @@ import org.hqu.indoor_pos.rmi.LoginImpl;
 import org.hqu.indoor_pos.rmi.RoomManage;
 import org.hqu.indoor_pos.rmi.RoomManageImpl;
 import org.hqu.indoor_pos.server.Server;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.hqu.indoor_pos.util.CopyOnWriteMap;
+import org.hqu.indoor_pos.util.SpringUtil;
 
 public class test {
-	@Test
+	/*@Test
 	public void testjdbc(){
 		Connection c = DBUtil.getConnection();
 		try {
@@ -77,8 +81,130 @@ public class test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}*/
+	
+	@Test
+	public void testSpringJDBC(){
+		JdbcTemplate jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
+		System.out.println(jdbcTemplate.queryForObject("select room_id from base_station where base_id="+"10001", Integer.class));
+	}
+	@Test
+	public void testSpringJDBC11(){
+		final Map<Integer, Double[]> envFactors = new CopyOnWriteMap<Integer, Double[]>();
+		JdbcTemplate jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
+		jdbcTemplate.query("select * from env_factor",   
+	                new RowCallbackHandler() {     
+	              
+	                    @Override    
+	                    public void processRow(ResultSet rs) throws SQLException {     
+	                    	envFactors.put(rs.getInt(1), new Double[]{rs.getDouble(2), rs.getDouble(3), rs.getDouble(4)});
+	                    }     
+	        });   
+		/*jdbcTemplate.query("select * from env_factor",   
+                new RowMapper(){  
+              
+                    @Override  
+                    public void mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	envFactors.put(rs.getInt(1), new Double[]{rs.getDouble(2), rs.getDouble(3), rs.getDouble(4)});
+                    }  
+        });  */
+		System.out.println(envFactors.size());
+	}
+	@Test
+	public void testSpringJDBC7(){
+		JdbcTemplate jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
+		List<Location> l = jdbcTemplate.query("select * from location where timestamp between  ? and ? order by timestamp desc",
+				new Object[]{"2016-08-05 16:15:35", "2016-08-05 16:15:37"},   
+                new int[]{java.sql.Types.VARCHAR, java.sql.Types.VARCHAR},
+                new RowMapper<Location>(){  
+              
+                    @Override  
+                    public Location mapRow(ResultSet rs, int rowNum) throws SQLException {  
+                    	Location location = new Location(rs.getString(2), rs.getInt(3), rs.getDouble(4),
+        						rs.getDouble(5), rs.getTimestamp(6));
+                        return location;  
+                    }  
+        });  
+		System.out.println(l.size());
 	}
 	
+	@Test
+	public void testSpringJDBC9() throws RemoteException{
+		JdbcTemplate jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
+		try{
+			LoginUser a = (LoginUser) jdbcTemplate.queryForObject(  
+                "select * from login where username = ? and password = ?",   
+                new Object[]{"aaa", "aaa"},  
+                new RowMapper<LoginUser>(){  
+  
+                    @Override  
+                    public LoginUser mapRow(ResultSet rs,int rowNum)throws SQLException {  
+                    	LoginUser lu = new LoginUser(rs.getString(2), rs.getString(3), rs.getString(4));  
+                        return lu;  
+                    } 
+        });
+			System.out.println(a);
+		}catch(Exception e){
+		
+		System.out.println("null");
+		}
+	}
+	@Test
+	public void testSpringJDBC1(){
+		final Map<String, double[]> basesLocation =new HashMap<String, double[]>();
+		basesLocation.put("1", new double[]{1.0,1.0});
+		basesLocation.put("2", new double[]{1.0,1.0});
+	}
+	@SuppressWarnings("rawtypes")
+	@Test
+	public void testSpringJDBC2() throws RemoteException{
+		JdbcTemplate jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
+		@SuppressWarnings("unchecked")
+		List<BaseStation> a = jdbcTemplate.query("select * from base_station",   
+                new RowMapper(){  
+            
+            @Override  
+            public Object mapRow(ResultSet rs, int rowNum) throws SQLException {  
+            	BaseStation base = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));
+                return base;  
+            }  
+		});  
+		System.out.println(a.size());
+	}
+	
+	@Test
+	public void testSpringJDBC3() throws RemoteException{
+		boolean b = false;
+		JdbcTemplate jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
+		BaseStation baseStation = new BaseStation("dsdsa",2,3.0,4.0);
+		try{
+			jdbcTemplate.update("insert into base_station values (?, ?, ?, ?)",   
+	            new Object[]{baseStation.getBaseId(), baseStation.getRoomId(), baseStation.getxAxis(), baseStation.getyAxis()}); 
+		}catch(Exception e){
+			b=false;
+		}
+		
+		System.out.println(b);
+	}
+	@Test
+	public void testSpringJDBC5() throws RemoteException{
+		JdbcTemplate jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
+		BaseStation baseStation = (BaseStation) jdbcTemplate.queryForObject(  
+                "select * from base_station where base_id = ?",   
+                new Object[]{10001},  
+                new RowMapper<BaseStation>(){  
+  
+                    @Override  
+                    public BaseStation mapRow(ResultSet rs,int rowNum)throws SQLException {  
+                    	BaseStation baseStation  = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));  
+                        return baseStation;  
+                    }  
+              
+        }); 
+		
+		System.out.println(baseStation.getBaseId());
+		System.out.println(baseStation.getRoomId());
+	}
 	@Test
 	public void testjdbc1() throws Exception{
 		File file = new File("D:/Layout.jpg");
@@ -150,7 +276,7 @@ public class test {
 		System.out.println(timestamp);
 	}
 	
-	@Test
+	/*@Test
 	public void te2(){
 		List<Location> locations = new ArrayList<Location>();
 		Connection conn = DBUtil.getConnection();
@@ -172,7 +298,7 @@ public class test {
 			e.printStackTrace();
 		}
 		System.out.println(locations.size());
-	}
+	}*/
 	@Test
 	public void SBSQL3(){
 		/*LoginUser i = null;
@@ -212,7 +338,7 @@ public class test {
 		}
 	}
 	
-	@Test
+	/*@Test
 	public void SBSQL7(){
 		BaseStation baseStation = new BaseStation("aaa", 1, 3.0, 3.1);
 		Connection conn = DBUtil.getConnection();
@@ -227,9 +353,9 @@ public class test {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
-	@Test
+	/*@Test
 	public void SBSQL8(){
 		String baseId = "aaa";
 		Connection conn = DBUtil.getConnection();
@@ -241,9 +367,9 @@ public class test {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
-	@Test
+	/*@Test
 	public void SBSQL9(){
 		BaseStation base = null;
 		Connection conn = DBUtil.getConnection();
@@ -258,7 +384,7 @@ public class test {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	@Test
 	public void SBSQL2(){
@@ -332,7 +458,7 @@ public class test {
 		//Dealer dealer = new Trilateral();使用加权三边定位算法
 		//double[] location = dealer.getLocation(bases);//其中location[0]是定位得到的横坐标，location[2]是纵坐标
 	}
-	@Test
+	/*@Test
 	public void env(){
 		
 		try {
@@ -347,7 +473,7 @@ public class test {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	@Test
 	public void map(){
@@ -394,7 +520,7 @@ public class test {
 		return;
 	}
 	
-	@Test
+	/*@Test
 	public void testDb(){
 		
 		try {
@@ -416,9 +542,9 @@ public class test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
-	@Test
+	/*@Test
 	public void testDb1(){
 		
 		try {
@@ -436,9 +562,9 @@ public class test {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
-	@Test
+	/*@Test
 	public void testDb2(){
 		List<Location> locations = new ArrayList<Location>();
 		int j = 0;
@@ -489,7 +615,7 @@ public class test {
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 	@Test
 	public void tesr(){
 		List<Integer> l = new ArrayList<Integer>();
@@ -574,7 +700,7 @@ public class test {
 		Revise r = new Revise();
 		System.out.println(r.revise(-75,1.975));
 	}
-	@Test
+	/*@Test
 	public void t2(){
 		Connection conn = DBUtil.getConnection();
 			try {
@@ -589,5 +715,5 @@ public class test {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-	}
+	}*/
 }
