@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -32,7 +31,9 @@ import org.hqu.indoor_pos.rmi.LoginInfoManage;
 import org.hqu.indoor_pos.rmi.LoginInfoManageImpl;
 import org.hqu.indoor_pos.rmi.RoomManage;
 import org.hqu.indoor_pos.rmi.RoomManageImpl;
-import org.hqu.indoor_pos.util.DBUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 
 
 public class DispServer {
@@ -57,6 +58,9 @@ public class DispServer {
     
     /*定位结果向数据库存储的缓存*/
     public Map<Integer, Location> locsToDB = new HashMap<Integer, Location>();
+    
+    @Autowired
+	private JdbcTemplate jdbcTemplate;
     
 	public void startDispServer() {
 		
@@ -134,29 +138,26 @@ public class DispServer {
         	locsToDB.put(++i, loc);
         	/*每15条存一次数据库*/
         	if(i == 15){
-        		Connection conn = DBUtil.getConnection();
-                try {
-					PreparedStatement stat = conn.prepareStatement("insert into location(emp_id, x_axis, y_axis, timestamp, room_id) values(?, ?, ?, ?, ?)");
-					for (int k=1; k<=i; k++){
-						Location location = locsToDB.get(k);
-					    	stat.setString(1, location.getEmpId());
-					    	stat.setDouble(2, location.getxAxis());
-					    	stat.setDouble(3, location.getyAxis());
-					    	stat.setTimestamp(4, location.getTimeStamp());
-					    	stat.setInt(5, location.getRoomId());
-					    	stat.executeUpdate();
-					}
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}finally{
-					try {
-						conn.close();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+        		for (int k=1; k<=i; k++){
+        			final Location location = locsToDB.get(k);
+        			try{
+		        		this.jdbcTemplate.update(  
+		    					"insert into location(emp_id, x_axis, y_axis, timestamp, room_id) values(?, ?, ?, ?, ?)",   
+		    	                new PreparedStatementSetter(){  
+		    	                    @Override  
+		    	                    public void setValues(PreparedStatement ps) throws SQLException {  
+		    	                        ps.setString(1, location.getEmpId());
+		    	                        ps.setDouble(2, location.getxAxis());
+		    	                        ps.setDouble(3, location.getyAxis());
+		    	                        ps.setTimestamp(4, location.getTimeStamp());
+		    	                        ps.setInt(5, location.getRoomId());
+		    	                    }  
+		    	                }  
+		    	        ); 
+        			}catch(Exception e){
+        				
+        			}
+        		}
              	locsToDB = new ConcurrentHashMap<Integer,Location>();
         	}
         }
