@@ -1,7 +1,5 @@
 package org.hqu.indoor_pos.rmi;
 
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,14 +12,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
-public class BaseStationManageImpl extends UnicastRemoteObject implements BaseStationManage{
-
-	private static final long serialVersionUID = 1L;
+public class BaseStationManageImpl implements BaseStationManage{
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	public BaseStationManageImpl() throws RemoteException {
+	public BaseStationManageImpl() {
 		super();
 	}
 	
@@ -29,7 +25,7 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	 * 查找所有基站
 	 */
 	@Override
-	public List<BaseStation> findAllBaseStation() throws RemoteException {
+	public List<BaseStation> findAllBaseStation() {
 
 		return this.jdbcTemplate.query("select * from base_station",   
                 new RowMapper<BaseStation>(){  
@@ -47,7 +43,7 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	 * @param roomId
 	 */
 	@Override
-	public List<BaseStation> findBaseStationByRoomId(Integer roomId) throws RemoteException {
+	public List<BaseStation> findBaseStationByRoomId(Integer roomId) {
 		
 		return this.jdbcTemplate.query("select * from base_station where room_id = ?",
 				new Object[]{roomId},   
@@ -67,7 +63,7 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	 * @param baseStation
 	 */
 	@Override
-	public boolean saveBaseStation(BaseStation baseStation) throws RemoteException {
+	public boolean saveBaseStation(BaseStation baseStation) {
         
 		try {
 			this.jdbcTemplate.update("insert into base_station values (?, ?, ?, ?)",   
@@ -86,8 +82,7 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	 * @param baseStation
 	 */
 	@Override
-	public boolean updateBaseStation(final BaseStation baseStation)
-			throws RemoteException {
+	public boolean updateBaseStation(final BaseStation baseStation) {
 		
 		try {
 			this.jdbcTemplate.update(  
@@ -116,7 +111,7 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	 * @param baseId
 	 */
 	@Override
-	public boolean deleteBaseStation(final String baseId) throws RemoteException {
+	public boolean deleteBaseStation(final String baseId) {
 		
 		try {
 			this.jdbcTemplate.update(  
@@ -142,7 +137,7 @@ public class BaseStationManageImpl extends UnicastRemoteObject implements BaseSt
 	 * @param baseId
 	 */
 	@Override
-	public BaseStation getBaseStationById(String baseId) throws RemoteException {
+	public BaseStation getBaseStationById(String baseId) {
 		
 		return (BaseStation) this.jdbcTemplate.queryForObject(  
                 "select * from base_station where base_id = ?",   
