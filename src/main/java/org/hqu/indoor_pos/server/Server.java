@@ -10,6 +10,7 @@ import org.hqu.indoor_pos.algorithm.Dealer;
 import org.hqu.indoor_pos.algorithm.Trilateral;
 import org.hqu.indoor_pos.bean.Location;
 import org.hqu.indoor_pos.util.CopyOnWriteMap;
+import org.hqu.indoor_pos.util.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -45,11 +46,11 @@ public class Server {
 	/*环境因子的查询缓存*/
 	public static Map<Integer, Double[]> envFactors;
 	
-	@Autowired
 	private static JdbcTemplate jdbcTemplate;
 	
     public static void main(String[] args) throws Exception {
     	
+    	jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
         int port = 50006;
         
         locs = new LinkedBlockingQueue<Location>();
