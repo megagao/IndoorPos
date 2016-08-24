@@ -7,8 +7,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
-import java.rmi.Naming;
-import java.rmi.registry.LocateRegistry;
+import java.net.UnknownHostException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -17,20 +16,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.hqu.indoor_pos.bean.Location;
-import org.hqu.indoor_pos.rmi.BaseStationManage;
-import org.hqu.indoor_pos.rmi.BaseStationManageImpl;
-import org.hqu.indoor_pos.rmi.EmployeeManage;
-import org.hqu.indoor_pos.rmi.EmployeeManageImpl;
-import org.hqu.indoor_pos.rmi.EnvFactorManage;
-import org.hqu.indoor_pos.rmi.EnvFactorManageImpl;
-import org.hqu.indoor_pos.rmi.HistoryLocation;
-import org.hqu.indoor_pos.rmi.HistoryLocationImpl;
-import org.hqu.indoor_pos.rmi.Login;
-import org.hqu.indoor_pos.rmi.LoginImpl;
-import org.hqu.indoor_pos.rmi.LoginInfoManage;
-import org.hqu.indoor_pos.rmi.LoginInfoManageImpl;
-import org.hqu.indoor_pos.rmi.RoomManage;
-import org.hqu.indoor_pos.rmi.RoomManageImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -50,9 +35,6 @@ public class DispServer {
     /*缓存向数据库存储定位结果的计数值*/
     private int i = 0;
     
-    /*远程对象注册到RMI注册服务器上,绑定的URL前缀*/
-    private String serverURL;  
-    
     /*本机地址*/
     private String host;
     
@@ -64,56 +46,16 @@ public class DispServer {
     
 	public void startDispServer() {
 		
-		try {
-			/*获取本机地址*/
-			host = InetAddress.getLocalHost().getHostAddress();
-			System.out.println(host);
-			
-			/**jdk中的说明：
-			 * Naming 类提供在对象注册表中存储和获得远程对远程对象引用的方法。
-			 * Naming 类的每个方法都可将某个名称作为其一个参数，
-			 * 该名称是使用以下形式的 URL 格式（没有 scheme 组件）的 java.lang.String： 
-			 *    //host:port/name
-			 */
-			serverURL = "rmi://"+host+":"+DISP_SERVERPORT+"/";
-			
-			/*本地主机上的远程对象注册表Registry的实例，并指定端口为5005（Java默认端口是1099），必不可缺的一步，缺少注册表创建，则无法绑定对象到远程注册表上 */
-			LocateRegistry.createRegistry(5005); 
-			
-			/*实例化实现了Login接口的远程服务LoginImpl对象*/
-		    Login login = new LoginImpl(); 
-		    
-		    /*实例化实现了RoomManage接口的远程服务RoomManageImpl对象*/ 
-		    RoomManage roomManage = new RoomManageImpl();
-		    
-		    /*实例化实现了BaseStationManage接口的远程服务BaseStationManageImpl对象*/ 
-		    BaseStationManage baseStationManage = new BaseStationManageImpl();
-		    
-		    /*实例化实现了EmployeeManage接口的远程服务EmployeeManageImpl对象*/ 
-		    EmployeeManage employeeManage = new EmployeeManageImpl();
-		    
-		    /*实例化实现了EnvFactorManage接口的远程服务EnvFactorManageImpl对象*/ 
-		    EnvFactorManage envFactorManage = new EnvFactorManageImpl();
-		    
-		    /*实例化实现了LoginInfoManage接口的远程服务LoginInfoManageImpl对象*/ 
-		    LoginInfoManage loginInfoManage = new LoginInfoManageImpl();
-		    
-		    /*实例化实现了HistoryLocation接口的远程服务HistoryLocationImpl对象*/ 
-		    HistoryLocation historyLocation = new HistoryLocationImpl();
-		    
-		    /*把远程对象注册到RMI注册服务器上，并命名为login,绑定的URL标准格式为：rmi://host:port/name,其中协议名(rmi)可以省略  */		    
-		    Naming.bind(serverURL+"login", login); 
-		    Naming.bind(serverURL+"roomManage", roomManage); 
-		    Naming.bind(serverURL+"baseStationManage", baseStationManage); 
-		    Naming.bind(serverURL+"employeeManage", employeeManage); 
-		    Naming.bind(serverURL+"envFactorManage", envFactorManage); 
-		    Naming.bind(serverURL+"loginInfoManage", loginInfoManage);
-		    Naming.bind(serverURL+"historyLocation", historyLocation);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
+		/*获取本机地址*/
+		try {
+			host = InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		System.out.println(host);
+			
 		/*启动显示客户端监听线程*/
         Thread dispThread =new Thread(new DispThread());  
         dispThread.start();
