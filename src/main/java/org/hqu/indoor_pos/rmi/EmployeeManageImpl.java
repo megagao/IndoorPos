@@ -1,7 +1,6 @@
 package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,10 +12,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
-public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeManage{
+public class EmployeeManageImpl implements EmployeeManage{
 
-	private static final long serialVersionUID = 1L;
-	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
@@ -28,7 +25,7 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	 * 查找所有员工
 	 */
 	@Override
-	public List<Employee> findAllEmp() throws RemoteException {
+	public List<Employee> findAllEmp() {
 		
 		return this.jdbcTemplate.query("select * from employee",   
                 new RowMapper<Employee>(){  
@@ -46,7 +43,7 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	 * @param employee
 	 */
 	@Override
-	public boolean saveEmployee(Employee employee) throws RemoteException {
+	public boolean saveEmployee(Employee employee) {
 		
 		try {
 			this.jdbcTemplate.update("insert into employee values(?, ?, ?, ?)",   
@@ -63,7 +60,7 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	 * @param employee
 	 */
 	@Override
-	public boolean updateEmployee(final Employee employee) throws RemoteException {
+	public boolean updateEmployee(final Employee employee) {
 		
 		try {
 			this.jdbcTemplate.update(  
@@ -90,7 +87,7 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	 * @param empId
 	 */
 	@Override
-	public boolean deleteEmployee(final String empId) throws RemoteException {
+	public boolean deleteEmployee(final String empId) {
 		
 		try {
 			this.jdbcTemplate.update(  
@@ -114,7 +111,7 @@ public class EmployeeManageImpl extends UnicastRemoteObject implements EmployeeM
 	 * @param empId
 	 */
 	@Override
-	public Employee getEmployeeById(String empId) throws RemoteException {
+	public Employee getEmployeeById(String empId) {
 		
 		return (Employee) this.jdbcTemplate.queryForObject(  
                 "select * from employee where emp_id = ?",   
