@@ -1,7 +1,6 @@
 package org.hqu.indoor_pos.rmi;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -11,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryLocation{
-
-	private static final long serialVersionUID = 1L;
+public class HistoryLocationImpl implements HistoryLocation{
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -26,7 +23,7 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	 * 查找所有历史位置，以最近时间向下排列
 	 */
 	@Override
-	public List<Location> findAllHistoryLocation() throws RemoteException {
+	public List<Location> findAllHistoryLocation() {
 		
 		return this.jdbcTemplate.query("select * from location order by timestamp desc",   
                 new RowMapper<Location>(){  
@@ -45,10 +42,10 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	 * @param empId
 	 */
 	@Override
-	public List<Location> findHisLocByEmpId(String empId)
-			throws RemoteException {
+	public List<Location> findHisLocByEmpId(String empId) {
 
-		return this.jdbcTemplate.query("select * from base_station where room_id = ? order by timestamp desc",
+		return this.jdbcTemplate.query(
+				"select * from base_station where room_id = ? order by timestamp desc",
 				new Object[]{empId},   
                 new int[]{java.sql.Types.VARCHAR},
                 new RowMapper<Location>(){  
@@ -67,10 +64,10 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	 * @param fromTime, toTime
 	 */
 	@Override
-	public List<Location> findHisLocByTime(String fromTime, String toTime)
-			throws RemoteException {
+	public List<Location> findHisLocByTime(String fromTime, String toTime) {
 		
-		return this.jdbcTemplate.query("select * from location where timestamp between  ? and ? order by timestamp desc",
+		return this.jdbcTemplate.query(
+				"select * from location where timestamp between  ? and ? order by timestamp desc",
 				new Object[]{fromTime, toTime},   
                 new int[]{java.sql.Types.VARCHAR, java.sql.Types.VARCHAR},
                 new RowMapper<Location>(){  
@@ -89,10 +86,10 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	 * @param empId, fromTime, toTime
 	 */
 	@Override
-	public List<Location> findHisLocByEmpIdAndTime(String empId,
-			String fromTime, String toTime) throws RemoteException {
+	public List<Location> findHisLocByEmpIdAndTime(String empId, String fromTime, String toTime) {
 
-		return this.jdbcTemplate.query("select * from location where emp_id = ? and timestamp between  ? and ? order by timestamp desc",
+		return this.jdbcTemplate.query(
+				"select * from location where emp_id = ? and timestamp between  ? and ? order by timestamp desc",
 				new Object[]{empId, fromTime, toTime},   
                 new int[]{java.sql.Types.VARCHAR, java.sql.Types.VARCHAR, java.sql.Types.VARCHAR},
                 new RowMapper<Location>(){  
@@ -111,10 +108,10 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	 * @param roomId
 	 */
 	@Override
-	public List<Location> findHisLocByRoomId(Integer roomId)
-			throws RemoteException {
+	public List<Location> findHisLocByRoomId(Integer roomId) {
 
-		return this.jdbcTemplate.query("select * from location where room_id = ? order by timestamp desc",
+		return this.jdbcTemplate.query(
+				"select * from location where room_id = ? order by timestamp desc",
 				new Object[]{roomId},   
                 new int[]{java.sql.Types.INTEGER},
                 new RowMapper<Location>(){  
@@ -134,9 +131,10 @@ public class HistoryLocationImpl extends UnicastRemoteObject implements HistoryL
 	 */
 	@Override
 	public List<Location> findHisLocByRoomIdAndTime(Integer roomId,
-			String fromTime, String toTime) throws RemoteException {
+			String fromTime, String toTime) {
 
-		return this.jdbcTemplate.query("select * from location where room_id = ? and timestamp between  ? and ? order by timestamp desc",
+		return this.jdbcTemplate.query(
+				"select * from location where room_id = ? and timestamp between  ? and ? order by timestamp desc",
 				new Object[]{roomId, fromTime, toTime},   
                 new int[]{java.sql.Types.INTEGER, java.sql.Types.VARCHAR, java.sql.Types.VARCHAR},
                 new RowMapper<Location>(){  
