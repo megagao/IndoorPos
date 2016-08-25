@@ -2,14 +2,26 @@ package org.hqu.indoor_pos.bean;
 
 import java.io.Serializable;
 
+/**
+ * 
+ * created on 2016年8月25日
+ *
+ * @description: 基站bean
+ *
+ * @author: megagao
+ * @version: 0.0.1
+ */
 public class BaseStation implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
+	/*基站ID*/
 	private String baseId;
 	
+	/*房间ID*/
 	private Integer roomId;
 	
+	/*基站坐标*/
 	private Double xAxis;
 	
 	private Double yAxis;
