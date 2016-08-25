@@ -3,8 +3,13 @@ package org.hqu.indoor_pos.bean;
 import java.io.Serializable;
 
 /**
- * <p>封装的基站对象</p>
- * @author megagao
+ * 
+ * created on 2016年8月25日
+ *
+ * @description: 封装的参与定位计算的基站信息
+ *
+ * @author: megagao
+ * @version: 0.0.1
  */
 public class BleBase implements Comparable<BleBase>,Serializable{
 	
