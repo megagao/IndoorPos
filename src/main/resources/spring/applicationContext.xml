@@ -15,5 +15,6 @@
           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
           
 	<import resource="applicationContext-db.xml"/>
+	<import resource="applicationContext-rmi.xml"/>
 	<context:component-scan base-package="com.realfond"></context:component-scan>
 </beans>
