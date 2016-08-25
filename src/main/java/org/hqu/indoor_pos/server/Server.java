@@ -11,9 +11,6 @@ import org.hqu.indoor_pos.algorithm.Trilateral;
 import org.hqu.indoor_pos.bean.Location;
 import org.hqu.indoor_pos.util.CopyOnWriteMap;
 import org.hqu.indoor_pos.util.SpringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
