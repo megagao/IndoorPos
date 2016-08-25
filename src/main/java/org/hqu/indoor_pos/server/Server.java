@@ -12,6 +12,8 @@ import org.hqu.indoor_pos.bean.Location;
 import org.hqu.indoor_pos.util.CopyOnWriteMap;
 import org.hqu.indoor_pos.util.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 
@@ -51,6 +53,7 @@ public class Server {
     public static void main(String[] args) throws Exception {
     	
     	jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
+    	
         int port = 50006;
         
         locs = new LinkedBlockingQueue<Location>();
