@@ -88,6 +88,7 @@ public class test {
 		JdbcTemplate jdbcTemplate = (JdbcTemplate) SpringUtil.context.getBean("jdbcTemplate");
 		System.out.println(jdbcTemplate.queryForObject("select room_id from base_station where base_id="+"10001", Integer.class));
 	}
+	
 	@Test
 	public void testSpringJDBC11(){
 		final Map<Integer, Double[]> envFactors = new CopyOnWriteMap<Integer, Double[]>();
