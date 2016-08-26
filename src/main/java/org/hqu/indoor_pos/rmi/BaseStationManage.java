@@ -46,7 +46,6 @@ public interface BaseStationManage {
 	public boolean updateBaseStation(BaseStation baseStation);
 	
 	/**
-	 * 
 	 * @description: 删除基站
 	 *
 	 * @param: baseId
