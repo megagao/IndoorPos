@@ -37,7 +37,8 @@ public class EmployeeManageImpl implements EmployeeManage{
               
                     @Override  
                     public Employee mapRow(ResultSet rs, int rowNum) throws SQLException {  
-                    	Employee employee = new Employee(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4));
+                    	Employee employee = new Employee(rs.getString(1),
+                    			rs.getString(2),rs.getString(3),rs.getString(4));
                         return employee;  
                     }  
         });  
@@ -48,7 +49,8 @@ public class EmployeeManageImpl implements EmployeeManage{
 		
 		try {
 			this.jdbcTemplate.update("insert into employee values(?, ?, ?, ?)",   
-	                new Object[]{employee.getEmpId(), employee.getName(), employee.getSex(), employee.getTerminalId()}); 
+	                new Object[]{employee.getEmpId(), employee.getName(),
+						employee.getSex(), employee.getTerminalId()}); 
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -109,7 +111,8 @@ public class EmployeeManageImpl implements EmployeeManage{
   
                     @Override  
                     public Employee mapRow(ResultSet rs,int rowNum)throws SQLException {  
-                    	Employee employee = new Employee(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4)); 
+                    	Employee employee = new Employee(rs.getString(1),rs.getString(2),
+                    			rs.getString(3),rs.getString(4)); 
                         return employee;  
                     }  
         }); 
