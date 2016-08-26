@@ -3,10 +3,13 @@ package org.hqu.indoor_pos.bean;
 import java.io.Serializable;
 
 /**
- * <p>封装的环境影响因素对象</p>
- * <p>在进行定位的程序中，从数据库中或直接赋值得到这三个因素的值，然后用这三个值为类变量赋值。
- * 定位的算法通过类变量拿到这三个值进行定位运算。</p>
- * @author megagao
+ * 
+ * created on 2016年8月25日
+ *
+ * @description: 环境因子bean
+ *
+ * @author: megagao
+ * @version: 0.0.1
  */
 public class EnvFactor implements Serializable{
 	
