@@ -12,6 +12,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * created on 2016年8月26日
+ *
+ * @description: 基站管理服务实现对象
+ *
+ * @author: megagao
+ * @version: 0.0.1
+ */
 public class BaseStationManageImpl implements BaseStationManage{
 
 	@Autowired
@@ -21,9 +29,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 		super();
 	}
 	
-	/**
-	 * 查找所有基站
-	 */
 	@Override
 	public List<BaseStation> findAllBaseStation() {
 
@@ -38,10 +43,6 @@ public class BaseStationManageImpl implements BaseStationManage{
         });  
 	}
 	
-	/**
-	 * 根据房间id查找房间内的基站
-	 * @param roomId
-	 */
 	@Override
 	public List<BaseStation> findBaseStationByRoomId(Integer roomId) {
 		
@@ -58,10 +59,6 @@ public class BaseStationManageImpl implements BaseStationManage{
         });  
 	}
 
-	/**
-	 * 保存基站
-	 * @param baseStation
-	 */
 	@Override
 	public boolean saveBaseStation(BaseStation baseStation) {
         
@@ -77,10 +74,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 		return true;
 	}
 
-	/**
-	 * 修改基站信息
-	 * @param baseStation
-	 */
 	@Override
 	public boolean updateBaseStation(final BaseStation baseStation) {
 		
@@ -106,10 +99,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 		return true;
 	}
 
-	/**
-	 * 删除基站
-	 * @param baseId
-	 */
 	@Override
 	public boolean deleteBaseStation(final String baseId) {
 		
@@ -132,10 +121,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 		return true;
 	}
 
-	/**
-	 * 根据基站id查询基站
-	 * @param baseId
-	 */
 	@Override
 	public BaseStation getBaseStationById(String baseId) {
 		
