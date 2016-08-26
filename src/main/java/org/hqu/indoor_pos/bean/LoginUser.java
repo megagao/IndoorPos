@@ -2,6 +2,15 @@ package org.hqu.indoor_pos.bean;
 
 import java.io.Serializable;
 
+/**
+ * 
+ * created on 2016年8月25日
+ *
+ * @description: 登录人员bean
+ *
+ * @author: megagao
+ * @version: 0.0.1
+ */
 public class LoginUser implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
