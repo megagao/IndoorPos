@@ -12,6 +12,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * created on 2016年8月26日
+ *
+ * @description: 员工管理服务接口
+ *
+ * @author: megagao
+ * @version: 0.0.1
+ */
 public class EmployeeManageImpl implements EmployeeManage{
 
 	@Autowired
@@ -21,9 +29,6 @@ public class EmployeeManageImpl implements EmployeeManage{
 		super();
 	}
 
-	/**
-	 * 查找所有员工
-	 */
 	@Override
 	public List<Employee> findAllEmp() {
 		
@@ -38,10 +43,6 @@ public class EmployeeManageImpl implements EmployeeManage{
         });  
 	}
 
-	/**
-	 * 保存员工
-	 * @param employee
-	 */
 	@Override
 	public boolean saveEmployee(Employee employee) {
 		
@@ -55,10 +56,6 @@ public class EmployeeManageImpl implements EmployeeManage{
 		return true;
 	}
 
-	/**
-	 * 修改员工信息
-	 * @param employee
-	 */
 	@Override
 	public boolean updateEmployee(final Employee employee) {
 		
@@ -82,10 +79,6 @@ public class EmployeeManageImpl implements EmployeeManage{
 		return true;
 	}
 
-	/**
-	 * 删除员工
-	 * @param empId
-	 */
 	@Override
 	public boolean deleteEmployee(final String empId) {
 		
@@ -106,10 +99,6 @@ public class EmployeeManageImpl implements EmployeeManage{
 		return true;
 	}
 
-	/**
-	 * 根据员工id查询员工
-	 * @param empId
-	 */
 	@Override
 	public Employee getEmployeeById(String empId) {
 		
