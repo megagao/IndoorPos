@@ -37,7 +37,8 @@ public class BaseStationManageImpl implements BaseStationManage{
               
                     @Override  
                     public BaseStation mapRow(ResultSet rs, int rowNum) throws SQLException {  
-                    	BaseStation base = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));
+                    	BaseStation base = new BaseStation(rs.getString(1),rs.getInt(2),
+                    			rs.getDouble(3),rs.getDouble(4));
                         return base;  
                     }  
         });  
@@ -53,7 +54,8 @@ public class BaseStationManageImpl implements BaseStationManage{
               
                     @Override  
                     public BaseStation mapRow(ResultSet rs, int rowNum) throws SQLException {  
-                    	BaseStation base = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));
+                    	BaseStation base = new BaseStation(rs.getString(1),rs.getInt(2),
+                    			rs.getDouble(3),rs.getDouble(4));
                         return base;  
                     }  
         });  
@@ -64,13 +66,15 @@ public class BaseStationManageImpl implements BaseStationManage{
         
 		try {
 			this.jdbcTemplate.update("insert into base_station values (?, ?, ?, ?)",   
-	                new Object[]{baseStation.getBaseId(), baseStation.getRoomId(), baseStation.getxAxis(), baseStation.getyAxis()});  
+	                new Object[]{baseStation.getBaseId(), baseStation.getRoomId(),
+						baseStation.getxAxis(), baseStation.getyAxis()});  
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 		Server.roomIds.put(baseStation.getBaseId(), baseStation.getRoomId());
-		Server.baseStationLocs.put(baseStation.getBaseId(), new Double[]{baseStation.getxAxis(), baseStation.getyAxis()});
+		Server.baseStationLocs.put(baseStation.getBaseId(),
+				new Double[]{baseStation.getxAxis(), baseStation.getyAxis()});
 		return true;
 	}
 
@@ -95,7 +99,8 @@ public class BaseStationManageImpl implements BaseStationManage{
 			return false;
 		}
 		Server.roomIds.put(baseStation.getBaseId(), baseStation.getRoomId());
-		Server.baseStationLocs.put(baseStation.getBaseId(), new Double[]{baseStation.getxAxis(), baseStation.getyAxis()});
+		Server.baseStationLocs.put(baseStation.getBaseId(), 
+				new Double[]{baseStation.getxAxis(), baseStation.getyAxis()});
 		return true;
 	}
 
@@ -131,7 +136,8 @@ public class BaseStationManageImpl implements BaseStationManage{
   
                     @Override  
                     public BaseStation mapRow(ResultSet rs,int rowNum)throws SQLException {  
-                    	BaseStation baseStation  = new BaseStation(rs.getString(1),rs.getInt(2),rs.getDouble(3),rs.getDouble(4));  
+                    	BaseStation baseStation  = new BaseStation(rs.getString(1),rs.getInt(2),
+                    			rs.getDouble(3),rs.getDouble(4));  
                         return baseStation;  
                     }  
         }); 
