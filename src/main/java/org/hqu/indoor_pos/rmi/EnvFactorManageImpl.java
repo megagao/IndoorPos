@@ -16,7 +16,7 @@ import org.springframework.jdbc.core.RowMapper;
 /**
  * created on 2016年8月26日
  *
- * @description: 环境因子管理服务接口实现对象
+ * @description: 环境因子管理服务接口实现类
  *
  * @author: megagao
  * @version: 0.0.1
