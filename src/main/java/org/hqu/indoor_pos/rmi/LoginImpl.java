@@ -9,6 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * created on 2016年8月27日
+ *
+ * @description: 登录服务接口实现类
+ *
+ * @author: megagao
+ * @version: 0.0.1
+ */
 public class LoginImpl implements Login{
 
 	@Autowired
@@ -18,10 +26,6 @@ public class LoginImpl implements Login{
 		super();
 	}
 
-	/**
-	 * 登录
-	 * @param str
-	 */
 	@Override
 	public LoginUser login(String str) {
 		
