@@ -10,6 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * created on 2016年8月26日
+ *
+ * @description: 历史位置管理服务接口实现类
+ *
+ * @author: megagao
+ * @version: 0.0.1
+ */
 public class HistoryLocationImpl implements HistoryLocation{
 
 	@Autowired
@@ -19,9 +27,6 @@ public class HistoryLocationImpl implements HistoryLocation{
 		super();
 	}
 
-	/**
-	 * 查找所有历史位置，以最近时间向下排列
-	 */
 	@Override
 	public List<Location> findAllHistoryLocation() {
 		
@@ -37,10 +42,6 @@ public class HistoryLocationImpl implements HistoryLocation{
         });  
 	}
 
-	/**
-	 * 按员工id查询该用户所有历史位置
-	 * @param empId
-	 */
 	@Override
 	public List<Location> findHisLocByEmpId(String empId) {
 
@@ -59,10 +60,6 @@ public class HistoryLocationImpl implements HistoryLocation{
         });  
 	}
 
-	/**
-	 * 按时间查询所有定位结果
-	 * @param fromTime, toTime
-	 */
 	@Override
 	public List<Location> findHisLocByTime(String fromTime, String toTime) {
 		
@@ -81,10 +78,6 @@ public class HistoryLocationImpl implements HistoryLocation{
         });  
 	}
 
-	/**
-	 * 按时间及员工id查询
-	 * @param empId, fromTime, toTime
-	 */
 	@Override
 	public List<Location> findHisLocByEmpIdAndTime(String empId, String fromTime, String toTime) {
 
@@ -103,10 +96,6 @@ public class HistoryLocationImpl implements HistoryLocation{
         });  
 	}
 
-	/**
-	 * 按房间id查询历史位置
-	 * @param roomId
-	 */
 	@Override
 	public List<Location> findHisLocByRoomId(Integer roomId) {
 
@@ -125,10 +114,6 @@ public class HistoryLocationImpl implements HistoryLocation{
         });  
 	}
 
-	/**
-	 * 按时间及房间id查询
-	 * @param roomId
-	 */
 	@Override
 	public List<Location> findHisLocByRoomIdAndTime(Integer roomId,
 			String fromTime, String toTime) {
