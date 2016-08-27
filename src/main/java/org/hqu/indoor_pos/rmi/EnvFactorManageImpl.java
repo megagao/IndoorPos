@@ -13,6 +13,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * created on 2016年8月26日
+ *
+ * @description: 环境因子管理服务接口实现对象
+ *
+ * @author: megagao
+ * @version: 0.0.1
+ */
 public class EnvFactorManageImpl implements EnvFactorManage{
 
 	@Autowired
@@ -22,9 +30,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
 		super();
 	}
 
-	/**
-	 * 查找所有房间的环境因子
-	 */
 	@Override
 	public List<EnvFactor> findAllEnvFactor() {
 		
@@ -39,10 +44,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
         });  
 	}
 
-	/**
-	 * 根据房间id查找相应的环境因子
-	 * @param roomId
-	 */
 	@Override
 	public EnvFactor findEnvFactorByRoomId(Integer roomId) {
 
@@ -59,10 +60,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
         }); 
 	}
 
-	/**
-	 * 保存环境因子
-	 * @param envFactor
-	 */
 	@Override
 	public boolean saveEnvFactor(EnvFactor envFactor) {
 		
@@ -80,10 +77,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
 		return true;
 	}
 
-	/**
-	 * 修改环境因子
-	 * @param envFactor
-	 */
 	@Override
 	public boolean updateEnvFactor(final EnvFactor envFactor) {
 		
@@ -108,10 +101,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
 		return true;
 	}
 
-	/**
-	 * 删除环境因子
-	 * @param roomId
-	 */
 	@Override
 	public boolean deleteEnvFactor(final Integer roomId) {
 		
