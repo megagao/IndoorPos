@@ -15,7 +15,7 @@ import org.springframework.jdbc.core.RowMapper;
 /**
  * created on 2016年8月26日
  *
- * @description: 基站管理服务实现对象
+ * @description: 基站管理服务实现类
  *
  * @author: megagao
  * @version: 0.0.1
