@@ -16,6 +16,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * created on 2016年8月27日
+ *
+ * @description: 房间管理服务接口
+ *
+ * @author: megagao
+ * @version: 0.0.1
+ */
 public class RoomManageImpl implements RoomManage{
 
 	@Autowired
@@ -25,9 +33,6 @@ public class RoomManageImpl implements RoomManage{
 		super();
 	}
 
-	/**
-	 * 查找所有房间信息
-	 */
 	@Override
 	public List<RoomInfo> findAllRoomInfo() {
 		
@@ -44,9 +49,6 @@ public class RoomManageImpl implements RoomManage{
         });  
 	}
 	
-	/**
-	 * 得到房间列表
-	 */
 	@Override
 	public List<String> findRoomList() {
 		
@@ -61,10 +63,6 @@ public class RoomManageImpl implements RoomManage{
         });  
 	}
 	
-	/**
-	 * 根据roomName查询房间信息
-	 * @param roomName  
-	 */
 	@Override
 	public RoomInfo getRoomInfoByName(String roomName) {
 		
@@ -84,10 +82,6 @@ public class RoomManageImpl implements RoomManage{
         }); 
 	}
 
-	/**
-	 * 根据roomID查询房间信息
-	 * @param roomId
-	 */
 	@Override
 	public RoomInfo getRoomInfoById(Integer roomId) {
 		
@@ -107,10 +101,6 @@ public class RoomManageImpl implements RoomManage{
         }); 
 	}
 
-	/**
-	 * 保存房间信息
-	 * @param roomInfo
-	 */
 	@Override
 	public boolean saveRoomInfo(final RoomInfo roomInfo) {
 		
@@ -123,7 +113,8 @@ public class RoomManageImpl implements RoomManage{
 	                    public void setValues(PreparedStatement ps) throws SQLException {  
 	                        ps.setInt(1, roomInfo.getRoomId());
 	                        ps.setString(2, roomInfo.getRoomName());
-	                        ps.setBinaryStream(3, new ByteArrayInputStream(layoutImageData), layoutImageData.length);
+	                        ps.setBinaryStream(3, new ByteArrayInputStream(layoutImageData),
+	                        		layoutImageData.length);
 	                        ps.setInt(4, roomInfo.getPixelsPerM());
 	                    }  
 	                }  
@@ -135,10 +126,6 @@ public class RoomManageImpl implements RoomManage{
 		return true;
 	}
 
-	/**
-	 * 修改房间信息
-	 * @param roomInfo
-	 */
 	@Override
 	public boolean updateRoomInfo(final RoomInfo roomInfo) {
 		
@@ -163,10 +150,6 @@ public class RoomManageImpl implements RoomManage{
 		return true;
 	}
 
-	/**
-	 * 删除房间信息
-	 * @param roomId
-	 */
 	@Override
 	public boolean deleteRoomInfo(final Integer roomId) {
 		
@@ -188,8 +171,10 @@ public class RoomManageImpl implements RoomManage{
 	}
 	
 	/**
-	 * blobToBytes
-	 * @param blob
+	 * @description: blobToBytes
+	 *
+	 * @param: blob
+	 * @return: byte[]
 	 */
 	public byte[] blobToBytes(Blob blob) {
 
