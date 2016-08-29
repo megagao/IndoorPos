@@ -12,6 +12,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
+/**
+ * created on 2016年8月27日
+ *
+ * @description: 登录人员管理服务接口实现类
+ *
+ * @author: megagao
+ * @version: 0.0.1
+ */
 public class LoginInfoManageImpl implements LoginInfoManage{
 
 	@Autowired
@@ -21,9 +29,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
 		super();
 	}
 
-	/**
-	 * 查找所有用户信息
-	 */
 	@Override
 	public List<LoginUser> findAllLoginUser() {
 
@@ -39,10 +44,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
         });  
 	}
 
-	/**
-	 * 保存用户
-	 * @param loginUser
-	 */
 	@Override
 	public boolean saveLoginUser(LoginUser loginUser) {
 		
@@ -57,10 +58,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
 		return true;
 	}
 
-	/**
-	 * 修改用户
-	 * @param loginUser
-	 */
 	@Override
 	public boolean updateLoginUser(final LoginUser loginUser) {
 		
@@ -84,10 +81,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
 		return true;
 	}
 
-	/**
-	 * 删除用户
-	 * @param userId
-	 */
 	@Override
 	public boolean deleteLoginUser(final String userId) {
 		
@@ -108,10 +101,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
 		return true;
 	}
 
-	/**
-	 * 根据用户名查询用户
-	 * @param userId
-	 */
 	@Override
 	public LoginUser getLoginUserById(final String userId) {
 		
