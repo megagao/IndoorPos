@@ -7,57 +7,57 @@ import org.hqu.indoor_pos.bean.BaseStation;
 /**
  * created on 2016年8月26日
  *
- * @description: 基站管理服务接口
+ * 基站管理服务接口
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public interface BaseStationManage {
 	
 	/**
-	 * @description: 查找所有基站
+	 * 查找所有基站
 	 *
-	 * @return: 所有基站信息
+	 * @return  所有基站信息
 	 */
 	public List<BaseStation> findAllBaseStation(); 
 
 	/**
-	 * @description: 根据房间id查找房间内的基站
+	 * 根据房间id查找房间内的基站
 	 *
-	 * @param: roomId
-	 * @return: 基站列表
+	 * @param  roomId
+	 * @return  基站列表
 	 */
 	public List<BaseStation> findBaseStationByRoomId(Integer roomId); 
 	
 	/**
-	 * @description: 保存基站
+	 * 保存基站
 	 *
-	 * @param: baseStation
-	 * @return: 是否成功
+	 * @param  baseStation
+	 * @return  是否成功
 	 */
 	public boolean saveBaseStation(BaseStation baseStation);
 	
 	/**
-	 * @description: 修改基站信息
+	 * 修改基站信息
 	 *
-	 * @param: baseStation
-	 * @return: 是否成功
+	 * @param  baseStation
+	 * @return  是否成功
 	 */
 	public boolean updateBaseStation(BaseStation baseStation);
 	
 	/**
-	 * @description: 删除基站
+	 * 删除基站
 	 *
-	 * @param: baseId
-	 * @return: 是否成功
+	 * @param  baseId
+	 * @return  是否成功
 	 */
 	public boolean deleteBaseStation(String baseId);
 	
 	/**
-	 * @description: 根据基站id查询基站
+	 * 根据基站id查询基站
 	 *
-	 * @param: baseId
-	 * @return: 基站信息
+	 * @param  baseId
+	 * @return  基站信息
 	 */
 	public BaseStation getBaseStationById(String baseId);
 	

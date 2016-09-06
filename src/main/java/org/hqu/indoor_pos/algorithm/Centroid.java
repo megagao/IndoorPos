@@ -19,10 +19,10 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 /**
  * created on 2016年8月22日
  * 
- * @description: 三角形加权质心定位算法
+ * 三角形加权质心定位算法
  * 
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class Centroid implements Dealer{
 	
@@ -108,10 +108,10 @@ public class Centroid implements Dealer{
 	}
 	
 	/**
-	 * @description: 求出通过该组基站距离加权后的坐标
+	 * 求出通过该组基站距离加权后的坐标
 	 * 
-	 * @param: bases 接收到的一组基站对象列表(此处列表中的基站应当是id各异的)
-	 * @return: 返回通过该组基站距离加权后的坐标
+	 * @param  bases 接收到的一组基站对象列表(此处列表中的基站应当是id各异的)
+	 * @return  返回通过该组基站距离加权后的坐标
 	 */
 	public double[] calculate(List<BleBase> bases){
 		
@@ -193,12 +193,12 @@ public class Centroid implements Dealer{
 	}
 	
 	/**
-	 * @description: 求三角形质心算法
+	 * 求三角形质心算法
 	 *
-	 * @param: r1 Round对象
-	 * @param: r2
-	 * @param: r3
-	 * @return: Coordinate对象
+	 * @param  r1 Round对象
+	 * @param  r2
+	 * @param  r3
+	 * @return  Coordinate对象
 	 */
 	public static Coordinate triCentroid(Round r1, Round r2, Round r3) {
 		
@@ -217,7 +217,7 @@ public class Centroid implements Dealer{
 											r2.getX(), r2.getY(), r2.getR());
 		
 		if (intersections1 != null && !intersections1.isEmpty()) {
-			for (Coordinate intersection : intersections1) {
+			for (Coordinate intersection :intersections1) {
 				if (p1==null&&Math.pow(intersection.getX()-r3.getX(),2) 
 						+ Math.pow(intersection.getY()-r3.getY(),2) <= Math.pow(r3.getR(),2)) {
 					p1 = intersection;
@@ -295,15 +295,15 @@ public class Centroid implements Dealer{
 	}
 	
 	/**
-	 * @description: 求两个圆的交点
+	 * 求两个圆的交点
 	 *
-	 * @param: x1  圆心1横坐标
-	 * @param: y1  圆心1纵坐标
-	 * @param: r1  圆心1半径
-	 * @param: x2  圆心2横坐标
-	 * @param: y2  圆心2纵坐标
-	 * @param: r2 圆心2半径
-	 * @return: 返回两个圆的交点坐标对象列表
+	 * @param  x1  圆心1横坐标
+	 * @param  y1  圆心1纵坐标
+	 * @param  r1  圆心1半径
+	 * @param  x2  圆心2横坐标
+	 * @param  y2  圆心2纵坐标
+	 * @param  r2 圆心2半径
+	 * @return 返回两个圆的交点坐标对象列表
 	 */
 	public static List<Coordinate> intersection(double x1, double y1, double r1,
 												double x2, double y2, double r2) {

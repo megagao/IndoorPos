@@ -3,10 +3,10 @@ package org.hqu.indoor_pos.algorithm;
 /**
  * created on 2016年8月22日
  *
- * @description: 对环境衰减因子进行修正
+ * 对环境衰减因子进行修正
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class Revise {
 	

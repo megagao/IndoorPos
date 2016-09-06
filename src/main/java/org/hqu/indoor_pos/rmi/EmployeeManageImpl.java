@@ -15,10 +15,10 @@ import org.springframework.jdbc.core.RowMapper;
 /**
  * created on 2016年8月26日
  *
- * @description: 员工管理服务接口实现类
+ * 员工管理服务接口实现类
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class EmployeeManageImpl implements EmployeeManage{
 

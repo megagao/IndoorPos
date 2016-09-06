@@ -19,10 +19,10 @@ import org.springframework.jdbc.core.RowMapper;
 /**
  * created on 2016年8月27日
  *
- * @description: 房间管理服务接口
+ * 房间管理服务接口
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class RoomManageImpl implements RoomManage{
 
@@ -171,10 +171,10 @@ public class RoomManageImpl implements RoomManage{
 	}
 	
 	/**
-	 * @description: blobToBytes
+	 * blobToBytes
 	 *
-	 * @param: blob
-	 * @return: byte[]
+	 * @param  blob
+	 * @return  byte[]
 	 */
 	public byte[] blobToBytes(Blob blob) {
 

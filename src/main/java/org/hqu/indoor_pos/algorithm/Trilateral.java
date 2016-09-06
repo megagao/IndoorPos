@@ -13,10 +13,10 @@ import Jama.Matrix;
 /**
  * created on 2016年8月22日
  *
- * @description: 三边定位算法
+ * 三边定位算法
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class Trilateral implements Dealer{
 	
@@ -46,10 +46,10 @@ public class Trilateral implements Dealer{
 	}
 	
 	/**
-	 * @description: 计算定位坐标
+	 * 计算定位坐标
 	 * 
-	 * @param: bases 接收到的一组基站对象列表(此处列表中的基站应当是id各异的)
-	 * @return: 返回定位坐标
+	 * @param  bases 接收到的一组基站对象列表(此处列表中的基站应当是id各异的)
+	 * @return  返回定位坐标
 	 */
 	public Location calculate(List<BleBase> bases, String terminalId){
 		

@@ -3,13 +3,12 @@ package org.hqu.indoor_pos.bean;
 import java.io.Serializable;
 
 /**
- * 
  * created on 2016年8月25日
  *
- * @description: 环境因子bean
+ * 环境因子bean
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class EnvFactor implements Serializable{
 	

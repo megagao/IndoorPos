@@ -4,13 +4,12 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
- * 
  * created on 2016年8月25日
  *
- * @description: 定位结果bean
+ * 定位结果bean
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class Location implements Serializable{
 	

@@ -3,7 +3,7 @@ package org.hqu.indoor_pos.algorithm;
 /**
  * created on 2016年8月22日
  * 
- * @description: 组合算法 从M个数中取出N个数，无序 
+ * 组合算法 从M个数中取出N个数，无序 
  * 
  *  <b>用法实例:</b>
  *  <blockquote><pre>
@@ -19,8 +19,8 @@ package org.hqu.indoor_pos.algorithm;
  *	}
  *  </pre></blockquote>
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author megagao
+ * @version 0.0.1
  */
 public class CombineAlgorithm {
 	
@@ -54,12 +54,12 @@ public class CombineAlgorithm {
     }
 
     /**
-     * @description: 计算 C(m,n)个数 = (m!)/(n!*(m-n)!)
+     * 计算 C(m,n)个数 = (m!)/(n!*(m-n)!)
      * 				   即从M中选N个数，函数返回有多少种选法（参数M必须大于等于n）
      *
-     * @param: m
-     * @param: n
-     * @return: 返回有C(m,n)种选法
+     * @param m
+     * @param n
+     * @return 返回有C(m,n)种选法
      */
     public int combination(int m, int n) {
         if (m < n)
@@ -79,12 +79,12 @@ public class CombineAlgorithm {
     }
     
     /**
-     * @description: 递归算法，把结果写到obj二维数组对象
+     * 递归算法，把结果写到obj二维数组对象
      *
-     * @param: src
-     * @param: srcIndex
-     * @param: i
-     * @param: tmp
+     * @param src
+     * @param srcIndex
+     * @param i
+     * @param tmp
      */
     private void combine(Object src[], int srcIndex, int i, int n, Object[] tmp) {
         int j;
@@ -105,9 +105,9 @@ public class CombineAlgorithm {
     }
 
     /**
-     * @description: 得到结果数组
+     * 得到结果数组
      *
-     * @return: 返回结果数组
+     * @return 返回结果数组
      */
     public Object[][] getResult() {
         return obj;

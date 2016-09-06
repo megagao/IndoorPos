@@ -13,10 +13,10 @@ import org.springframework.jdbc.core.RowMapper;
 /**
  * created on 2016年8月26日
  *
- * @description: 历史位置管理服务接口实现类
+ * 历史位置管理服务接口实现类
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class HistoryLocationImpl implements HistoryLocation{
 

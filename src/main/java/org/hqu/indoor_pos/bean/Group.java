@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
  * created on 2016年8月25日
  *
- * @description: 封装的分组bean
+ * 封装的分组bean
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class Group {
 	

@@ -1,13 +1,12 @@
 package org.hqu.indoor_pos.bean;
 
 /**
- * 
  * created on 2016年8月25日
  *
- * @description: 封装的圆bean
+ * 封装的圆bean
  *
- * @author: megagao
- * @version: 0.0.1
+ * @author  megagao
+ * @version  0.0.1
  */
 public class Round {
 	
