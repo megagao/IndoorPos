@@ -5,6 +5,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
  
+/**
+ * created on 2016年8月24日
+ *
+ * 仿造CopyOnWriteList构造的工具类
+ *
+ * @author  megagao
+ * @version  0.0.1
+ */
 public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable {
 	
     private volatile Map<K, V> internalMap;
