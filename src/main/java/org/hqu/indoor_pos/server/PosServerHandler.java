@@ -28,9 +28,7 @@ public class PosServerHandler extends ChannelHandlerAdapter {
         if(loc!=null){
             Server.locs.put(loc);
         }
-       
     }   
-    
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
@@ -45,6 +43,4 @@ public class PosServerHandler extends ChannelHandlerAdapter {
         cause.printStackTrace();
         ctx.close();
     }
-
-
 }
