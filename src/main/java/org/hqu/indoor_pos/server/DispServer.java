@@ -43,12 +43,10 @@ public class DispServer {
     
 	public void startDispServer() {
 		
-		
 		/*获取本机地址*/
 		try {
 			host = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		System.out.println(host);
@@ -61,11 +59,9 @@ public class DispServer {
         
         /*服务器端持续将实时的定位数据向维护的客户端列表中的客户端写*/
         while(true){
-        	
         	try {
 				loc = Server.locs.take();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         	
@@ -95,7 +91,7 @@ public class DispServer {
 		    	                }  
 		    	        ); 
         			}catch(Exception e){
-        				
+        				e.printStackTrace();
         			}
         		}
              	locsToDB = new ConcurrentHashMap<Integer,Location>();
@@ -114,22 +110,17 @@ public class DispServer {
 			dispClients = new CopyOnWriteArrayList<DispClient>();
 			
 			try {
-				
 	            System.out.println("Display Starting...");  
 	  
 	            dispServerSocket = new ServerSocket(DISP_PORT);
 	            
 	            while (true) {  
-	            	
 	            	/*等待接收显示客户端请求*/
 	                Socket dispClient = dispServerSocket.accept();  
 	                System.out.println("Display Started"); 
 	                DispClient dc = new DispClient(dispClient);
-	                
 	                new Thread(dc).start();
-	                
 	                dispClients.add(dc);
-	                
 	            }  
 	        } catch (Exception e) {  
 	            e.printStackTrace();  
@@ -142,22 +133,17 @@ public class DispServer {
 	                 e.printStackTrace();  
 	             }  
 	        }
-			
 		}
 	}
 	
 	class DispClient implements Runnable {
 		private OutputStream os = null;
-		//private InputStream is = null;
 		private DataOutputStream dos = null;
-		//private DataInputStream dis = null;
 
 		DispClient(Socket socket) {
 			try {
 				os = socket.getOutputStream();
-				//is = socket.getInputStream();
 				dos = new DataOutputStream(os);
-				//dis = new DataInputStream(is);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -186,5 +172,4 @@ public class DispServer {
 			}
 		}
 	}
-
 }
