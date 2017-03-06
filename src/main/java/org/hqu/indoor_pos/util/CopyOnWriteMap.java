@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * created on 2016年8月24日
  *
- * 仿造CopyOnWriteList构造的工具类
+ * 仿造CopyOnWriteList构造的并发工具类
  *
  * @author  megagao
  * @version  0.0.1
