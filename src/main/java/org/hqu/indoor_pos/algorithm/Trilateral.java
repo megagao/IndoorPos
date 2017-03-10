@@ -157,5 +157,4 @@ public class Trilateral implements Dealer{
 		
 		return location;
 	}
-	
 }
