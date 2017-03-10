@@ -48,7 +48,6 @@ public class DoGroup {
 			Collections.sort(uniqueBases);
 			return new ArrayList<BleBase>(uniqueBases.subList(len-3, len));
 		}
-		
 		return (ArrayList<BleBase>) uniqueBases;
 	}
 	
@@ -191,5 +190,4 @@ public class DoGroup {
 	public void setA(Integer[] a) {
 		this.a = a;
 	}
-	
 }
