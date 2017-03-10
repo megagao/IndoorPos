@@ -9,7 +9,6 @@ package org.hqu.indoor_pos.algorithm;
  * @version  0.0.1
  */
 public class Revise {
-	
 	public double revise(double rssi,double d){
 		return (-68-rssi)/(10*Math.log10(d));
 	}
@@ -17,5 +16,4 @@ public class Revise {
 	public double revise(double rssi){
 		return (-68-rssi)/(10*Math.log10(2));
 	}
-	
 }
