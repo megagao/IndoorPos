@@ -12,7 +12,6 @@ import org.hqu.indoor_pos.bean.Location;
  * @version  0.0.1
  */
 public interface Dealer {
-	
 	/**
 	 * 求定位终端坐标
 	 *
@@ -20,5 +19,4 @@ public interface Dealer {
 	 * @return  返回定位结果对象
 	 */
 	public Location getLocation(String str);
-	
 }
