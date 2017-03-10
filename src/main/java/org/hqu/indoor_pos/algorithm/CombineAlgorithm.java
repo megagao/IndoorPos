@@ -101,7 +101,6 @@ public class CombineAlgorithm {
                 i--;
             }
         }
-        
     }
 
     /**
@@ -112,5 +111,4 @@ public class CombineAlgorithm {
     public Object[][] getResult() {
         return obj;
     }
-    
 }
