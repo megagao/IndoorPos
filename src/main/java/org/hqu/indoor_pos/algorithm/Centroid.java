@@ -53,7 +53,8 @@ public class Centroid implements Dealer{
 		String maxRssiBaseId = uniqueBases.get(0).getId();
 		
 		/*根据rssi值最大的基站去数据库中查找相应的房间id*/
-		int rooId = this.jdbcTemplate.queryForObject("select room_id from base_station where base_id="+maxRssiBaseId, Integer.class);
+		int rooId = this.jdbcTemplate.queryForObject("select room_id from base_station where base_id = " + 
+			maxRssiBaseId, Integer.class);
 		location.setRoomId(rooId);
 		
 		/*拿到终端id*/
@@ -61,7 +62,8 @@ public class Centroid implements Dealer{
 		String terminalId = str1[str1.length-1];
 		
 		/*查找该终端对应的员工id*/
-		String empId = this.jdbcTemplate.queryForObject("select emp_id from employee where terminal_id="+terminalId, String.class);
+		String empId = this.jdbcTemplate.queryForObject("select emp_id from employee where terminal_id = " + 
+			terminalId, String.class);
 		location.setEmpId(empId);
 		
 		/*求组合数*/
@@ -71,7 +73,6 @@ public class Centroid implements Dealer{
 		try {
 			ca = new CombineAlgorithm(a,3);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -94,7 +95,6 @@ public class Centroid implements Dealer{
 			
 			tempLocation[0]+=weightLocation[0];
 			tempLocation[1]+=weightLocation[1];
-			
 		}
 		
 		location.setxAxis(tempLocation[0]/totalWeight);
@@ -233,7 +233,6 @@ public class Centroid implements Dealer{
 				}
 			}
 		} else {//没有交点定位错误
-			
 			return null;
 		}
 		
@@ -259,7 +258,6 @@ public class Centroid implements Dealer{
 				}
 			}
 		} else {//没有交点定位错误
-			
 			return null;
 		}
 		
@@ -319,13 +317,9 @@ public class Centroid implements Dealer{
 		Coordinate coor;
 		
 		if (d > r1 + r2 || d < Math.abs(r1 - r2)) {//相离或内含
-			
 			return null;
-			
 		} else if (x1 == x2 && y1 == y2) {//同心圆
-			
 			return null;
-			
 		} else if (y1 == y2 && x1 != x2) {
 			double a = ((r1 * r1 - r2 * r2) - (x1 * x1 - x2 * x2)) / (2 * x2 - 2 * x1);
 			if (d == Math.abs(r1 - r2) || d == r1 + r2) {// 只有一个交点时
@@ -373,5 +367,4 @@ public class Centroid implements Dealer{
 		}
 		return points;
 	}
-
 }
