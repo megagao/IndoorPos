@@ -152,7 +152,6 @@ public class WeightTrilateral implements Dealer{
 		this.jdbcTemplate.query("select base_id,x_axis,y_axis from base_station where base_id in (?,?,?)",   
                 new Object[] { ids[0],ids[1],ids[2]},   
                 new RowCallbackHandler() {     
-              
                     @Override    
                     public void processRow(ResultSet rs) throws SQLException {
                     	double[] loc1 = new double[2];
@@ -224,8 +223,6 @@ public class WeightTrilateral implements Dealer{
 		for(int i = 0; i < 2; i++) {
 			loc[i] = rawLocation[i]*weight;
 		}
-		
 		return loc;
 	}
-	
 }
