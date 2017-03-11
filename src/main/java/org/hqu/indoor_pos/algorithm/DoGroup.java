@@ -168,7 +168,6 @@ public class DoGroup {
 	 * @return  返回该List的中值
 	 */
 	public Integer getMedian(List<Integer> ls){
-		
 		Integer m;
 		
 		/*对列表进行排序*/
@@ -179,7 +178,6 @@ public class DoGroup {
         }else{
         	m=(ls.get(ls.size()/2));
         }
-		
 		return m;
 	}
 
