@@ -120,31 +120,6 @@ public class Trilateral implements Dealer{
 		location.setxAxis(resultArray[0][0]);
 		location.setyAxis(resultArray[1][0]);
 		
-		/*try {
-			根据rssi值最大的基站去数据库中查找相应的坐标系id
-			PreparedStatement stat = conn.prepareStatement("select coordinate_id from base_station where base_id=?");
-			stat.setString(1, ids[0]);
-			ResultSet rs = stat.executeQuery();
-			rs.next();
-			location.setCoordinateSys(rs.getInt(1)); 
-			
-			查找该终端对应的员工id
-			PreparedStatement stat1 = conn.prepareStatement("select emp_id from employee where terminal_id="+terminalId);
-			ResultSet rs1 = stat1.executeQuery();
-			rs1.next();
-			location.setEmPid(rs1.getString(1));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally{
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
-		
 		/*根据rssi值最大的基站查找相应的坐标系id*/
 		location.setRoomId(Server.roomIds.get(ids[baseNum-1])); 
 		
