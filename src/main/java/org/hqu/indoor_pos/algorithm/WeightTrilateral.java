@@ -95,7 +95,6 @@ public class WeightTrilateral implements Dealer{
 			
 			tempLocation[0]+=weightLocation[0];
 			tempLocation[1]+=weightLocation[1];
-			
 		}
 		
 		location.setxAxis(tempLocation[0]/totalWeight);
