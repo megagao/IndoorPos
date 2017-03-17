@@ -28,7 +28,6 @@ public class LoginImpl implements Login{
 
 	@Override
 	public LoginUser login(String str) {
-		
 		String[] str1 = str.split(",");
 		try{
 			LoginUser loginUser = (LoginUser) this.jdbcTemplate.queryForObject(  
