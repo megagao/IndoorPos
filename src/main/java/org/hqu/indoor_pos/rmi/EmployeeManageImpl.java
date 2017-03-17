@@ -31,7 +31,6 @@ public class EmployeeManageImpl implements EmployeeManage{
 
 	@Override
 	public List<Employee> findAllEmp() {
-		
 		return this.jdbcTemplate.query("select * from employee",   
                 new RowMapper<Employee>(){  
               
@@ -46,7 +45,6 @@ public class EmployeeManageImpl implements EmployeeManage{
 
 	@Override
 	public boolean saveEmployee(Employee employee) {
-		
 		try {
 			this.jdbcTemplate.update("insert into employee values(?, ?, ?, ?)",   
 	                new Object[]{employee.getEmpId(), employee.getName(),
@@ -60,7 +58,6 @@ public class EmployeeManageImpl implements EmployeeManage{
 
 	@Override
 	public boolean updateEmployee(final Employee employee) {
-		
 		try {
 			this.jdbcTemplate.update(  
 					"update employee set name = ?, sex = ?, terminal_id = ? where emp_id = ?",   
@@ -83,7 +80,6 @@ public class EmployeeManageImpl implements EmployeeManage{
 
 	@Override
 	public boolean deleteEmployee(final String empId) {
-		
 		try {
 			this.jdbcTemplate.update(  
 					"delete from employee  where emp_id = ?",   
@@ -103,7 +99,6 @@ public class EmployeeManageImpl implements EmployeeManage{
 
 	@Override
 	public Employee getEmployeeById(String empId) {
-		
 		return (Employee) this.jdbcTemplate.queryForObject(  
                 "select * from employee where emp_id = ?",   
                 new Object[]{empId},  
@@ -117,5 +112,4 @@ public class EmployeeManageImpl implements EmployeeManage{
                     }  
         }); 
 	}
-
 }
