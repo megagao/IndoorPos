@@ -31,7 +31,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 	
 	@Override
 	public List<BaseStation> findAllBaseStation() {
-
 		return this.jdbcTemplate.query("select * from base_station",   
                 new RowMapper<BaseStation>(){  
               
@@ -46,7 +45,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 	
 	@Override
 	public List<BaseStation> findBaseStationByRoomId(Integer roomId) {
-		
 		return this.jdbcTemplate.query("select * from base_station where room_id = ?",
 				new Object[]{roomId},   
                 new int[]{java.sql.Types.INTEGER},
@@ -63,7 +61,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 
 	@Override
 	public boolean saveBaseStation(BaseStation baseStation) {
-        
 		try {
 			this.jdbcTemplate.update("insert into base_station values (?, ?, ?, ?)",   
 	                new Object[]{baseStation.getBaseId(), baseStation.getRoomId(),
@@ -80,7 +77,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 
 	@Override
 	public boolean updateBaseStation(final BaseStation baseStation) {
-		
 		try {
 			this.jdbcTemplate.update(  
 					"update base_station set room_id = ?, x_axis = ?, y_axis = ? where base_id = ?",   
@@ -106,7 +102,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 
 	@Override
 	public boolean deleteBaseStation(final String baseId) {
-		
 		try {
 			this.jdbcTemplate.update(  
 					"delete from base_station  where room_id = ?",   
@@ -128,7 +123,6 @@ public class BaseStationManageImpl implements BaseStationManage{
 
 	@Override
 	public BaseStation getBaseStationById(String baseId) {
-		
 		return (BaseStation) this.jdbcTemplate.queryForObject(  
                 "select * from base_station where base_id = ?",   
                 new Object[]{baseId},  
@@ -142,5 +136,4 @@ public class BaseStationManageImpl implements BaseStationManage{
                     }  
         }); 
 	}
-	
 }
