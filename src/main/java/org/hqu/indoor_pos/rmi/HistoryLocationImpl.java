@@ -29,7 +29,6 @@ public class HistoryLocationImpl implements HistoryLocation{
 
 	@Override
 	public List<Location> findAllHistoryLocation() {
-		
 		return this.jdbcTemplate.query("select * from location order by timestamp desc",   
                 new RowMapper<Location>(){  
               
@@ -44,7 +43,6 @@ public class HistoryLocationImpl implements HistoryLocation{
 
 	@Override
 	public List<Location> findHisLocByEmpId(String empId) {
-
 		return this.jdbcTemplate.query(
 				"select * from base_station where room_id = ? order by timestamp desc",
 				new Object[]{empId},   
@@ -62,7 +60,6 @@ public class HistoryLocationImpl implements HistoryLocation{
 
 	@Override
 	public List<Location> findHisLocByTime(String fromTime, String toTime) {
-		
 		return this.jdbcTemplate.query(
 				"select * from location where timestamp between  ? and ? order by timestamp desc",
 				new Object[]{fromTime, toTime},   
@@ -80,7 +77,6 @@ public class HistoryLocationImpl implements HistoryLocation{
 
 	@Override
 	public List<Location> findHisLocByEmpIdAndTime(String empId, String fromTime, String toTime) {
-
 		return this.jdbcTemplate.query(
 				"select * from location where emp_id = ? and timestamp between  ? and ? order by timestamp desc",
 				new Object[]{empId, fromTime, toTime},   
@@ -98,7 +94,6 @@ public class HistoryLocationImpl implements HistoryLocation{
 
 	@Override
 	public List<Location> findHisLocByRoomId(Integer roomId) {
-
 		return this.jdbcTemplate.query(
 				"select * from location where room_id = ? order by timestamp desc",
 				new Object[]{roomId},   
@@ -117,7 +112,6 @@ public class HistoryLocationImpl implements HistoryLocation{
 	@Override
 	public List<Location> findHisLocByRoomIdAndTime(Integer roomId,
 			String fromTime, String toTime) {
-
 		return this.jdbcTemplate.query(
 				"select * from location where room_id = ? and timestamp between  ? and ? order by timestamp desc",
 				new Object[]{roomId, fromTime, toTime},   
@@ -132,5 +126,4 @@ public class HistoryLocationImpl implements HistoryLocation{
                     }  
         });  
 	}
-	
 }
