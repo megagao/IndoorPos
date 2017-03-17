@@ -35,7 +35,6 @@ public class RoomManageImpl implements RoomManage{
 
 	@Override
 	public List<RoomInfo> findAllRoomInfo() {
-		
 		return this.jdbcTemplate.query("select * from room",   
                 new RowMapper<RoomInfo>(){  
               
@@ -51,7 +50,6 @@ public class RoomManageImpl implements RoomManage{
 	
 	@Override
 	public List<String> findRoomList() {
-		
 		return this.jdbcTemplate.query("select room_name from room order by room_id",   
                 new RowMapper<String>(){  
               
@@ -65,7 +63,6 @@ public class RoomManageImpl implements RoomManage{
 	
 	@Override
 	public RoomInfo getRoomInfoByName(String roomName) {
-		
 		return (RoomInfo) this.jdbcTemplate.queryForObject(  
                 "select * from room where room_name = ?",   
                 new Object[]{roomName}, 
@@ -84,7 +81,6 @@ public class RoomManageImpl implements RoomManage{
 
 	@Override
 	public RoomInfo getRoomInfoById(Integer roomId) {
-		
 		return (RoomInfo) this.jdbcTemplate.queryForObject(  
                 "select * from room where room_id = ?",   
                 new Object[]{roomId}, 
@@ -103,7 +99,6 @@ public class RoomManageImpl implements RoomManage{
 
 	@Override
 	public boolean saveRoomInfo(final RoomInfo roomInfo) {
-		
 		try {
 			final byte[] layoutImageData = roomInfo.getLayoutImage();
 			this.jdbcTemplate.update(  
@@ -128,7 +123,6 @@ public class RoomManageImpl implements RoomManage{
 
 	@Override
 	public boolean updateRoomInfo(final RoomInfo roomInfo) {
-		
 		try {
 			final byte[] layoutImageData = roomInfo.getLayoutImage();
 			this.jdbcTemplate.update(  
@@ -152,7 +146,6 @@ public class RoomManageImpl implements RoomManage{
 
 	@Override
 	public boolean deleteRoomInfo(final Integer roomId) {
-		
 		try {
 			this.jdbcTemplate.update(  
 					"delete from room  where room_id = ?",   
@@ -177,7 +170,6 @@ public class RoomManageImpl implements RoomManage{
 	 * @return  byte[]
 	 */
 	public byte[] blobToBytes(Blob blob) {
-
 		  BufferedInputStream is = null;
 		  try {
 		    is = new BufferedInputStream(blob.getBinaryStream());
@@ -199,5 +191,5 @@ public class RoomManageImpl implements RoomManage{
 		      return null;
 		    }
 		  }
-		}
+	}
 }
