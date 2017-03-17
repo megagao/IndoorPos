@@ -31,7 +31,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
 
 	@Override
 	public List<LoginUser> findAllLoginUser() {
-
 		return this.jdbcTemplate.query("select * from login",   
                 new RowMapper<LoginUser>(){  
               
@@ -46,7 +45,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
 
 	@Override
 	public boolean saveLoginUser(LoginUser loginUser) {
-		
 		try {
 			this.jdbcTemplate.update("insert into login values (?, ?, ?, ?)",   
 	                new Object[]{loginUser.getUserId(), loginUser.getUsername(),
@@ -60,7 +58,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
 
 	@Override
 	public boolean updateLoginUser(final LoginUser loginUser) {
-		
 		try {
 			this.jdbcTemplate.update(  
 					"update login set username = ?, password = ?, role = ? where user_id = ?",   
@@ -83,7 +80,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
 
 	@Override
 	public boolean deleteLoginUser(final String userId) {
-		
 		try {
 			this.jdbcTemplate.update(  
 					"delete from login  where user_id = ?",   
@@ -103,7 +99,6 @@ public class LoginInfoManageImpl implements LoginInfoManage{
 
 	@Override
 	public LoginUser getLoginUserById(final String userId) {
-		
 		return (LoginUser) this.jdbcTemplate.queryForObject(  
                 "select * from login where user_id = ?",   
                 new Object[]{userId},  
@@ -117,5 +112,4 @@ public class LoginInfoManageImpl implements LoginInfoManage{
                     }  
         }); 
 	}
-
 }
