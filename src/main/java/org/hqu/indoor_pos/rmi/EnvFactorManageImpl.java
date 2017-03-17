@@ -32,7 +32,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
 
 	@Override
 	public List<EnvFactor> findAllEnvFactor() {
-		
 		return this.jdbcTemplate.query("select * from env_factor",   
                 new RowMapper<EnvFactor>(){  
               
@@ -46,7 +45,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
 
 	@Override
 	public EnvFactor findEnvFactorByRoomId(Integer roomId) {
-
 		return (EnvFactor) this.jdbcTemplate.queryForObject(  
                 "select * from env_factor where room_id = ?",   
                 new Object[]{roomId},  
@@ -62,7 +60,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
 
 	@Override
 	public boolean saveEnvFactor(EnvFactor envFactor) {
-		
 		this.jdbcTemplate.update("insert into env_factor (room_id, height, atten_factor, p0) values (?, ?, ?, ?)",   
                 new Object[]{envFactor.getRoomId(), envFactor.getHeight(), envFactor.getN(), envFactor.getP0()}); 
 		
@@ -79,7 +76,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
 
 	@Override
 	public boolean updateEnvFactor(final EnvFactor envFactor) {
-		
 		try {
 			this.jdbcTemplate.update(  
 					"update env_factor set height = ?, atten_factor = ?, p0 = ? where room_id = ?",   
@@ -103,7 +99,6 @@ public class EnvFactorManageImpl implements EnvFactorManage{
 
 	@Override
 	public boolean deleteEnvFactor(final Integer roomId) {
-		
 		try {
 			this.jdbcTemplate.update(  
 					"delete from env_factor  where room_id = ?",   
@@ -121,5 +116,4 @@ public class EnvFactorManageImpl implements EnvFactorManage{
 		Server.envFactors.remove(roomId);
 		return true;	
 	}
-
 }
