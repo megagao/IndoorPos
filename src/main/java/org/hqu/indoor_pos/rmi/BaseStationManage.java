@@ -60,5 +60,4 @@ public interface BaseStationManage {
 	 * @return  基站信息
 	 */
 	public BaseStation getBaseStationById(String baseId);
-	
 }
