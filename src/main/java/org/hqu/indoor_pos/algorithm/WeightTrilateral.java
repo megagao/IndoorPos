@@ -98,7 +98,7 @@ public class WeightTrilateral implements Dealer{
 		}
 		
 		location.setxAxis(tempLocation[0]/totalWeight);
-		location.setxAxis(tempLocation[1]/totalWeight);
+		location.setyAxis(tempLocation[1]/totalWeight);
 		
 		/*设置定位结果的时间戳*/
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
