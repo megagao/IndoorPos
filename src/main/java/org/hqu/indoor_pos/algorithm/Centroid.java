@@ -324,7 +324,7 @@ public class Centroid implements Dealer{
 			double a = ((r1 * r1 - r2 * r2) - (x1 * x1 - x2 * x2)) / (2 * x2 - 2 * x1);
 			if (d == Math.abs(r1 - r2) || d == r1 + r2) {// 只有一个交点时
 				coor=new Coordinate();
-				coor.setY(a);
+				coor.setX(a);
 				coor.setY(y1);
 				points.add(coor);
 			} else{// 两个交点
